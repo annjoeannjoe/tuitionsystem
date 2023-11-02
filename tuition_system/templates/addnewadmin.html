@@ -1,0 +1,182 @@
+{% extends 'sidebar_admin.html' %}
+
+{% block content %}
+    
+<html>
+    <head>
+    </head>
+
+    <style>
+        .tab-pane{
+            background-color: #FFFFFF;
+        }
+
+        .content-container{
+            background-color: #F8F8F8;
+            padding: 15px 5%;
+            padding-top: 10px;
+            padding-bottom: 20px;
+            border-radius: 10px;
+            margin: 0 auto;
+        }
+
+        .containerbutton{
+            background-color: #FFFFFF;
+            padding: 15px 5%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; /* Push both buttons to the right side of the container */
+        }
+
+        .btn-primary{
+            width: 80px;
+            height: 35px;
+            font-size: 15px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-secondary{
+            width: 80px;
+            height: 35px;
+            font-size: 15px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .form-control:focus{
+            outline: none;
+            border-color: #1E78FF;
+            box-shadow: 0 0 3px #1E78FF;
+        }
+
+        .password-input-container{
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .toggle-password-icon {
+            cursor: pointer;
+            color: #777;
+            margin-left: -30px;
+        }
+    </style>
+    
+    <body>
+        <br>
+        <h5><center><b>New Admin Profile</b></center></h5>
+
+        <div class="container mt-5">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab1">Admin's Details</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="tab1" class="tab-pane fade show active">
+                    <br>
+                    <form method="POST" id="saveForm"action="{% url 'addnewadmin' %}">
+                        {% csrf_token%}
+                        
+                        <div class="content-container">
+                            <br>
+                            <label for="fullname" class="form-label"><b>&nbspFull Name</b></label>
+                            <input type="text" class="form-control" id="fullname" name="fullname" autocomplete="off" required >
+                            
+                            <br>
+                            <label for="password" class="form-label"><b>&nbspPassword</b></label>
+                            <div class="password-input-container">
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <span onclick="togglePasswordVisibility('password','toggle_password')" class="toggle-password-icon"><i id="toggle_password" class="fas fa-eye-slash"></i></span>
+                            </div>
+                            
+                            <br>
+                            <label for="email" class="form-label"><b>&nbspEmail</b></label>
+                            <input type="text" class="form-control" id="email" name="email" autocomplete="off" required >
+                            
+                            <br>
+                            <label for="phoneNo" class="form-label"><b>&nbspPhone No.</b></label>
+                            <input type="text" class="form-control" id="phoneNo" name="phoneNo" autocomplete="off" required >
+                            
+                            <br><br>
+                            <label for="homeaddress" class="form-label"><b>&nbspHome Address</b></label>
+                        
+                            <br>
+                            <label for="street1" class="form-label"><b>&nbspStreet 1</b></label>
+                            <input type="text" class="form-control" id="street1" name="street1" autocomplete="off" required >
+                        
+                            <br>
+                            <label for="street2" class="form-label"><b>&nbspStreet 2</b></label>
+                            <input type="text" class="form-control" id="street2" name="street2" autocomplete="off" required >
+                        
+                            <br>
+                            <label for="city" class="form-label"><b>&nbspCity</b></label>
+                            <input type="text" class="form-control" id="city" name="city" autocomplete="off" required >
+                        
+                            <br>
+                            <label for="postalcode" class="form-label"><b>&nbspPostal Code</b></label>
+                            <input type="text" class="form-control" id="postalcode" name="postalcode" autocomplete="off" required >
+                        
+                            <br>
+                            <label for="state" class="form-label"><b>&nbspState</b></label>
+                            <input type="text" class="form-control" id="state" name="state" autocomplete="off" required>
+                            <br>
+                        </div>
+
+                            
+                        <div class="containerbutton">
+                            <a href="{% url 'admin_list_view' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModal">Save</button>
+                        </div>
+                    </form>
+                </div>
+
+                 <!--Save Confirmation Modal-->
+                <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel"><b>Confirm Save</b></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure want to save the changes?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="margin-right: 10px;">Cancel</button>
+                                <button type="submit" form= "saveForm" class="btn btn-primary">Save</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script>
+        function togglePasswordVisibility(inputId, iconId) {
+            var input = document.getElementById(inputId);
+            var icon = document.getElementById(iconId);
+    
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            }
+        }
+
+    </script>
+</html>
+ 
+{% endblock %}

@@ -1,0 +1,282 @@
+{% extends 'sidebar_admin.html' %}
+
+{% block content %}
+
+<html>
+<head></head>
+<style>
+
+    /*button[type=button]{            
+        padding: 5px 10px;
+        background-color: #1E78FF;
+        border: none;
+        border-radius: 4px;
+        color: white;
+    }
+
+    button[type=button]:hover{
+      background-color: #1254B9;
+    }*/
+
+    .addnewadminbtn{
+        color: white;
+        text-decoration: none;
+    }
+
+    button[type=button]:hover .addnewadminbtn {
+        color: white;
+    }
+
+    .add-admin-container{
+      text-align: right;
+    }
+
+    /*.action-buttons{
+      text-align: center;
+    }*/
+
+
+    .edit-button,
+    .delete-button{
+      display: inline-block;
+      margin-right: 5px;
+      padding: 6px 12px;
+      border-radius: 4px;
+      color: white;
+      text-decoration: none;
+      text-align: center;
+ 
+    }
+
+    .edit-button{
+      background-color: #00bec1 !important;
+      border: #00bec1 !important;
+    }
+
+    .edit-button:hover{
+      background-color: #009496 !important;
+    }
+
+    
+
+    /* Custom Styles */
+    .table {
+      width: 100%;
+      border: 1px solid #ccc;
+      border-collapse: collapse;
+    }
+
+    th{
+      cursor: pointer;
+    }
+    
+    .table th,
+    .table td {
+      padding: 8px;
+    }
+    
+    .table th {
+      background-color: #21486c;
+      color: #ffffff;
+    }
+
+    .user_fullname{
+      color: #333;
+    }
+
+    .user_fullname a{
+      color: #6a76ff;
+      text-decoration: none;
+    }
+
+    .user_fullname a:hover{
+      color: #1650e1;
+    }
+
+    .admin_rows:hover{
+      background-color: #e4e4e4;
+    }
+
+    .header-wrapper{
+      display: flex;
+      align-items: center;
+    }
+
+    .header-wrapper span{
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .header-wrapper i{
+      margin-left: 4px;
+    }
+            
+
+</style>
+
+  <body>
+  <br>
+   <h4><b>Admins</b></h4>
+   
+   <div class="add-admin-container">
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addAdminModal">
+      <!--<i class="fas fa-plus"></i>-->
+      <a href="{% url 'addnewadmin'%}" class="addnewadminbtn">Add Admin</a>
+    </button>
+   </div>
+   <br>
+   <table id="admin_table" class="table custom-table">
+    <thead>
+        <tr>
+            <th><span>No.</span></th>
+            <th onclick="sortTable(1)">
+              <div class="header-wrapper">
+                <span>
+                  Name
+                  <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                </span>
+              </div>
+            </th>
+            <th onclick="sortTable(2)">
+              <div class="header-wrapper">
+                <span>
+                  Email
+                  <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                </span>
+              </div>
+            </th>
+            <th>Phone No.</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+          {% if user.role == 'ADMIN' %}
+        <tr class="admin_rows">
+            <td>{{ users.start_index|add:forloop.counter0 }}</td>
+            <td class="user_fullname"><a href="{% url 'view_admin_detail' pk=user.id %}">{{ user.full_name}}</a></td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phone_no }}</td>
+            <td class="action-buttons">
+              <a href="{%url 'edit_admin_detail' pk=user.id %}" class="btn btn-primary edit-button" title="Edit User"><i class="fas fa-edit"></i></a>
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ user.id }}" title="Delete User"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>
+          {% endif %}
+        {% endfor%}
+        </tbody>
+   </table>
+   <br>
+
+   <!--Boostrap Pagination Component-->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+                {% if users.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ users.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+        
+                {% for i in page_range %}
+                    {% if i == users.number %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ i }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+        
+                {% if users.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ users.next_page_number }}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ users.paginator.num_pages }}">Last</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+   <!--Delete Confirmation Modal-->
+   {% for user in users %}
+   <div class="modal fade" id="deleteModal{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+       <div class="modal-content">
+          <div class="modal-header">
+             <h5 class="modal-title" id="exampleModalLabel"><b>Delete Admin</b></h5>
+             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+             Are you sure you want to delete the admin with the name "{{ user.full_name }}"?
+          </div>
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+             <a href="{% url 'delete_admin' user.id %}" class="btn btn-danger">Delete</a>
+          </div>
+       </div>
+    </div>
+  </div>
+  {% endfor %}
+  
+</body>
+<script>
+  function sortTable(n) {
+      var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+      table = document.getElementById("admin_table");
+      switching = true;
+      dir = "asc";
+      
+      while (switching) {
+          switching = false;
+          rows = table.rows;
+          
+          for (i = 1; i < (rows.length - 1); i++) {
+              shouldSwitch = false;
+              
+              // Extracting the text content from different columns
+              if (n === 0) {
+                  x = rows[i].getElementsByTagName("td")[n].getElementsByTagName("a")[0];
+                  y = rows[i + 1].getElementsByTagName("td")[n].getElementsByTagName("a")[0];
+              } else {
+                  x = rows[i].getElementsByTagName("td")[n];
+                  y = rows[i + 1].getElementsByTagName("td")[n];
+              }
+              
+              // Compare using localeCompare for case-insensitive sorting
+              var compareResult = x.innerText.localeCompare(y.innerText, undefined, { sensitivity: 'base' });
+              
+              if (dir == "asc") {
+                  if (compareResult > 0) {
+                      shouldSwitch = true;
+                      break;
+                  }
+              } else if (dir == "desc") {
+                  if (compareResult < 0) {
+                      shouldSwitch = true;
+                      break;
+                  }
+              }
+          }
+          
+          if (shouldSwitch) {
+              rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+              switching = true;
+              switchcount++;
+          } else {
+              if (switchcount == 0 && dir == "asc") {
+                  dir = "desc";
+                  switching = true;
+              }
+          }
+      }
+  }
+</script>
+</html>
+{% endblock %}

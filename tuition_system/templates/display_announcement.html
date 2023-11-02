@@ -1,0 +1,130 @@
+{% extends 'sidebar_admin.html' %}
+
+{% block content %}
+<html>
+<head>
+    <title>{{ announcement.announcement_title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            /*font-family: 'Roboto', Arial, sans-serif;*/
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+        }
+
+        .announcement_container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .announcement_header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .announcement_title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .announcement_content{
+            text-align: justify;
+        }
+
+        .announcement_content p {
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+        }
+
+        .closeButton{
+            color: white;
+            text-decoration: none;
+        }
+
+        button[type="button"]:hover .closeButton{
+            color: white;
+        }
+
+        .closeButtonContainer{
+            text-align: center;
+        }
+
+
+        /* Responsive styles */
+        @media only screen and (max-width: 600px) {
+            .announcement_container {
+                padding: 15px;
+                border-radius: 0;
+            }
+
+            .announcement_title {
+                font-size: 24px;
+            }
+
+            .greeting {
+                font-size: 18px;
+            }
+
+            .close_button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="announcement_container">
+        <div class="announcement_header">
+            <div class="announcement_title">{{ announcement.announcement_title }}</div>
+        </div>
+        <br>
+        <div class="greeting">
+            Dear {{ announcement.targeted_group }},
+        </div>
+        <div class="announcement_content">
+            <p>{{ announcement.announcement_content }}</p>
+        </div>
+        <br> 
+        <div class="footer">
+            <i>This announcement was sent to you by Berry Group Sdn Bhd on {{ announcement.announcement_posted_at|date:"d-m-Y"  }}.</i>
+        </div>
+        <br><br>
+   
+      
+    </div>
+    <div class="closeButtonContainer">
+        <!--<button type="button" class="btn btn-primary mb-3">-->
+            <!--<a href="{% url 'admin_announcementList' %}" class="closeButton">Close</a>-->
+            <button type="button" class="btn btn-primary mb-3" onclick="goBack()">Close</button>
+        <!--</button>-->
+    </div>
+</body>
+
+<script>
+    function goBack(){
+        window.location.href = document.referrer;
+    }
+</script>
+</html>
+
+{% endblock %}

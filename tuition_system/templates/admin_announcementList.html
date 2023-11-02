@@ -1,0 +1,311 @@
+{% extends "sidebar_admin.html" %}
+
+{% block content %}
+
+<html>
+    <head>
+    </head>
+        <style>
+            .announcementButtonContainer{
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+            }
+
+            .btn-primary.mb-3:not(:last-child) {
+                margin-right: 10px; /* Adjust the value to increase or decrease the space */
+            }
+
+            .inbox-button{
+                background-color: #00bec1;
+                border-color: #00bec1;
+            }
+
+            .inbox-button:hover{
+                background-color: #009496;
+                border-color: #009496;
+            }
+
+            .sent-button{
+                background-color: #7e7e7e;
+                border-color: #7e7e7e;
+            }
+
+            .sent-button:hover{
+                background-color: #5c5c5c;
+                border-color: #5c5c5c;
+            }
+
+            .sent-button{
+                background-color: #7e7e7e;
+                border-color: #7e7e7e;
+
+            }
+
+            .sent-button:hover{
+                background-color: #5c5c5c;
+                border-color: #5c5c5c;
+            }
+
+            .addAnnouncementButton{
+                color: white;
+                text-decoration: none;
+      
+            }
+
+            button[type=button]:hover .addAnnouncementButton{
+                color: white;
+            }
+
+            .custom-table{
+                border: 1px solid #ccc;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            th{
+                cursor: pointer;
+            }
+
+            .table th{
+                background-color: #16395a;
+                color: #ffffff;
+            }
+
+            .announcement_title{
+                color: #333;
+            }
+
+            .announcement_title a{
+                color: #6a76ff;
+                text-decoration: none;
+            }
+
+            .announcement_title a:hover{
+                color: #1650e1;
+            }
+
+            .announcement_rows:hover{
+                background-color: #e4e4e4;
+            }
+
+            .header-wrapper{
+                display: flex;
+                align-items: center;
+            }
+
+            .header-wrapper span{
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+     
+            }
+
+            .header-wrapper i{
+                margin-left: 4px;
+            }
+            
+        </style>
+        <body>
+            <br>
+            <h4><b>Announcement - Inbox </b></h4>
+            {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% endif %}
+
+    
+            <div class="announcementButtonContainer">
+                <a href="{% url 'admin_announcementList' %}" class="btn btn-primary mb-3 inbox-button">Inbox</a>
+                <a href="{% url 'admin_sentAnnouncementList' %}" class="btn btn-primary mb-3 sent-button">Sent</a>
+                <button type ="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addAnnouncementModal" onclick="resetAnnouncementForm()">
+                    <a href="#" class="addAnnouncementButton">Add Announcement</a>
+                </button>
+            </div>
+            <br>
+            <table id="announcement_table" class="table custom-table">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)">
+                            <div class="header-wrapper">
+                                <span>
+                                    Title
+                                    <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                </span>
+                            </div>
+                        </th>
+                        <th onclick="sortTable(1)">
+                            <div class="header-wrapper">
+                                <span>
+                                    Posted At
+                                    <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                </span>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for announcement in announcements %}
+                    <tr class="announcement_rows">
+                        <td class="announcement_title"><a href="{% url 'display_announcement' announcement.id %}">{{ announcement.announcement_title }}</a></td>                        
+                        <td>{{ announcement.announcement_posted_at|date:"d-m-Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <!--Boostrap Pagination Component-->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                    {% if announcements.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ announcements.previous_page_number }}">Previous</a>
+                    </li>
+                    {% endif %}
+            
+                    {% for i in page_range %}
+                        {% if i == announcements.number %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ i }}</span>
+                        </li>
+                        {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+            
+                    {% if announcements.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ announcements.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ announcements.paginator.num_pages }}">Last</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+
+
+
+
+
+            <!--Add Announcement Modal-->
+            <div class="modal fade" id="addAnnouncementModal" tabindex="-1" aria-label="addAnnonucementModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addAnnonucementModalLabel"><b>Add Announcement</b></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="announcementForm" method="post" action="{% url 'add_announcement' %}">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <h6><b>Targeted Group</b></h6>
+                                <select id="targeted_group" name="targeted_group" class="form-control" required>
+                                    <option value="" disabled selected>Select targeted group</option>
+                                    <option value="ALL">All Users</option>
+                                    <option value="ADMIN">Administrators</option>
+                                    <option value="STUDENT">Students</option>
+                                </select>
+                                <br>
+                                <h6><b>Annoucement Title</b></h6>
+                                <input type="text" class="form-control" id="announcement_title" name="announcement_title" required>
+                                <br>
+                                <h6><b>Announcement Content</b></h6>
+                                <textarea name="announcement_content" rows="4" cols="55" class="form-control" required></textarea>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Publish</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+              
+        </body>
+
+        
+        <script>
+        function sortTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("announcement_table");
+            switching = true;
+            dir = "asc";
+            
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    
+                    // Extracting the text content from different columns
+                    if (n === 0) {
+                        x = rows[i].getElementsByTagName("td")[n].getElementsByTagName("a")[0];
+                        y = rows[i + 1].getElementsByTagName("td")[n].getElementsByTagName("a")[0];
+                    } else {
+                        x = rows[i].getElementsByTagName("td")[n];
+                        y = rows[i + 1].getElementsByTagName("td")[n];
+                    }
+                    
+                    // Compare using localeCompare for case-insensitive sorting
+                    var compareResult = x.innerText.localeCompare(y.innerText, undefined, { sensitivity: 'base' });
+                    
+                    if (dir == "asc") {
+                        if (compareResult > 0) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (compareResult < 0) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+
+
+        // Function to hide the success message after a delay
+        function hideSuccessMessage() {
+            var successMessage = document.querySelector(".alert-success");
+            if (successMessage) {
+                setTimeout(function() {
+                    successMessage.style.display = "none";
+                }, 1500); // Adjust the delay (in milliseconds) as needed (e.g., 5000ms = 5 seconds)
+            }
+        }
+        // Call the hideSuccessMessage function when the page loads
+        window.onload = hideSuccessMessage;
+        
+        function resetAnnouncementForm(){
+            document.getElementById("announcementForm").reset();
+        }
+        </script>
+      
+
+
+    
+</html>
+{% endblock %}

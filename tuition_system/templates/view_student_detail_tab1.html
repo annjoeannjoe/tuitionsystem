@@ -1,0 +1,302 @@
+<html>
+<style>
+    .tab-pane {
+        background-color: #FFFFFF;
+    }
+
+    /* Add a class for the background container */
+    .content-container {
+        background-color: #F8F8F8; 
+        padding: 15px 5%;
+        padding-top: 10px;
+        padding-bottom: 20px;
+        border-radius: 10px; 
+        margin: 0 auto;
+    }
+
+    .containerbutton {
+        background-color: #FFFFFF;
+        padding: 15px 5%;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        
+    }
+
+    .containerbutton .back-button{
+        margin-right: auto;
+    }
+
+    .edit-button{
+        width: 80px;
+        height: 35px;
+        font-size: 15px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 20px;
+    }
+
+    .delete-button{
+        width: 80px;
+        height: 35px;
+        font-size: 15px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 5px;
+    }
+
+    .back-button{
+        width: 80px;
+        height: 35px;
+        font-size: 15px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    
+</style>
+
+<body>
+    <br>
+                <form method="POST" enctype="multipart/form-data">
+                {% csrf_token%}
+                
+                <!-- Wrap only the content in Tab 1 within the container div -->
+                <div class="content-container">
+                    
+                    <br>
+                    <label for="full_name" class="form-label"><b>&nbspFull Name</b></label><br>
+                    <input type="text" class="form-control" id="full_name" name="full_name" value="{{student.user.full_name}}" autocomplete="off" required disabled>
+                
+                    <br>      
+                    <label for="email" class="form-label"><b>&nbspEmail</b></label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" value="{{student.user.email}}" autocomplete="off" required disabled>
+                
+                    <br>
+                    <label for="school_level" class="form-label"><b>&nbspEducation Level</b></label><br>
+                    <select id="school_level" name="school_level" class="form-control" disabled>
+                        <option value="kindergarten" {% if student.school_level == "kindergarten" %}selected{% endif %}>Kindergarten</option>
+                        <option value="primary" {% if student.school_level == "primary" %}selected{% endif %}>Primary</option>
+                        <option value="secondary" {% if student.school_level == "secondary" %}selected{% endif %}>Secondary</option>
+                    </select>
+                    <br>
+                    
+              
+                    <div id="primary_school_type" style="display: none;">
+                        <label for="primary_school_type_select" class="form-label"><b>&nbspSchool Type</b></label><br>
+                        <select id="primary_school_type_select" name="primary_school_type" class="form-control" disabled>
+                            <option value="" selected disabled hidden>Select School Type</option>
+                            <option value="sk" {% if student.primary_school_type == "sk" %}selected{% endif %}>SK</option>
+                            <option value="sjkc" {% if student.primary_school_type == "sjkc" %}selected{% endif %}>SJKC</option>
+                        </select><br>
+                    </div>
+                
+                    <div id="sk_level" style="display: none;">
+                    <label for="sk_level_select" class="form-label"><b>&nbspSK Level</b></label><br>
+                    <select id="sk_level_select" name="sk_level" class="form-control" disabled>
+                        <option value="" selected disabled hidden>Select School Level</option>
+                        <option value="standard1" {% if student.sk_level == "standard1" %}selected{% endif %}>Standard 1</option>
+                        <option value="standard2" {% if student.sk_level == "standard2" %}selected{% endif %}>Standard 2</option>
+                        <option value="standard3" {% if student.sk_level == "standard3" %}selected{% endif %}>Standard 3</option>
+                        <option value="standard4" {% if student.sk_level == "standard4" %}selected{% endif %}>Standard 4</option>
+                        <option value="standard5" {% if student.sk_level == "standard5" %}selected{% endif %}>Standard 5</option>
+                        <option value="standard6" {% if student.sk_level == "standard6" %}selected{% endif %}>Standard 6</option>
+                    </select><br>
+                    </div>
+                
+                
+                    <div id="sjkc_level" style="display: none;">
+                    <label for="sjkc_level_select" class="form-label"><b>&nbspSJKC Level</b></label><br>
+                    <select id="sjkc_level_select" name="sjkc_level" class="form-control" disabled>
+                        <option value="" selected disabled hidden>Select School Level</option>
+                        <option value="standard1" {% if student.sjkc_level == "standard1" %}selected{% endif %}>Standard 1</option>
+                        <option value="standard2" {% if student.sjkc_level == "standard2" %}selected{% endif %}>Standard 2</option>
+                        <option value="standard3" {% if student.sjkc_level == "standard3" %}selected{% endif %}>Standard 3</option>
+                        <option value="standard4" {% if student.sjkc_level == "standard4" %}selected{% endif %}>Standard 4</option>
+                        <option value="standard5" {% if student.sjkc_level == "standard5" %}selected{% endif %}>Standard 5</option>
+                        <option value="standard6" {% if student.sjkc_level == "standard6" %}selected{% endif %}>Standard 6</option>
+                    </select><br>
+                    </div>
+                
+                    <div id="secondary_level" style="display: none;">
+                    <label for="secondary_level_select" class="form-label"><b>&nbspSMK / SMJK Level</b></label><br>
+                    <select id="secondary_level_select" name="secondary_level" class="form-control" disabled>
+                        <option value="" selected disabled hidden>Select School Level</option>
+                        <option value="form1" {% if student.secondary_level == "form1" %}selected{% endif %}>Form 1</option>
+                        <option value="form2" {% if student.secondary_level == "form2" %}selected{% endif %}>Form 2</option>
+                        <option value="form3" {% if student.secondary_level == "form3" %}selected{% endif %}>Form 3</option>
+                        <option value="form4" {% if student.secondary_level == "form4" %}selected{% endif %}>Form 4</option>
+                        <option value="form5" {% if student.secondary_level == "form5" %}selected{% endif %}>Form 5</option>
+                    </select><br>
+                    </div>
+
+                    <label for="school_name" class="form-label"><b>&nbspSchool (Full Name Of The School)</b></label><br>
+                    <input type="school_name" class="form-control" id="school_name" name="school_name" value="{{student.school_name}}" required disabled>
+
+                    <br>
+                    <label for="startdate" class="form-label"><b>&nbspStart Date</b></label>
+                    <input type="date" class="form-control" id="startdate" name="startdate" value="{{student.startdate|date:'Y-m-d'}}" required disabled>
+                    <br>
+                    <label for="bankin_receipt" class="form-label"><b>Bank In Transfer Receipt</b></label>
+                    <a href="{{ student.bankin_receipt.url }}" target="_blank" class="form-control" style="color: blue; background-color: #E9ECEF;">{{student_bankin_receipt_name}}</a>
+                    <div id="error_message" style="color: red;"></div>
+
+                    <br> 
+                    <label for="classin_phoneno" class="form-label"><b>&nbspRegistered Classin Mobile Number</b></label>
+                    <input type="text" class="form-control" id="classin_phoneno" name="classin_phoneno" value="{{student.classin_phoneno}}" autocomplete="off" required disabled>
+
+                    <br>
+                    <label for="phoneNo" class="form-label"><b>&nbspParent / Guardian Phone No.1</b></label>
+                    <input type="text" class="form-control" id="phoneNo" name="phoneNo" value="{{student.user.phone_no}}" autocomplete="off" required disabled>
+         
+                    <br>
+                    <label for="parent_phoneno2" class="form-label"><b>&nbspParent / Guardian Phone No.2 (Optional)</b></label>
+                    <input type="text" class="form-control" id="parent_phoneno2" name="parent_phoneno2" value="{{student.parent_phoneno2}}" autocomplete="off" disabled>
+         
+                    <br>
+                    <label for="student_phoneno" class="form-label"><b>&nbspStudent Phone No. (Optional)</b></label>
+                    <input type="text" class="form-control" id="student_phoneno" name="student_phoneno" value="{{student.student_phoneno}}" autocomplete="off" disabled>
+       
+                    <br>
+                    <label for="student_ic_number" class="form-label"><b>&nbspStudent IC Number</b></label>
+                    <input type="text" class="form-control" id="student_ic_number" name="student_ic_number" value="{{student.student_ic_number}}" autocomplete="off" disabled>
+
+                    <br>
+                    <label for="student_ic_photo" class="form-label"><b>Student IC (Snap Front IC)</b></label>
+                    <a href="{{ student.student_ic_photo.url }}" target="_blank" class="form-control" style="color: blue; background-color: #E9ECEF;" >{{student_ic_photo_name}}</a>
+
+                    <br>
+                    <label for="student_photo" class="form-label"><b>Student Photo (Passport Size Photo)</b></label>
+                    <a href="{{ student.student_photo.url }}" target="_blank" class="form-control" style="color: blue; background-color: #E9ECEF;" >{{student_photo_name}}</a>
+            
+                    <br><br>
+                    <label for="studenthomeaddress" class="form-label"><b>&nbspHome Address</b></label>
+                    <br>
+                    <label for="street1" class="form-label"><b>&nbspStreet 1</b></label>
+                    <input type="text" class="form-control" id="street1" name="street1" value="{{student.user.street1}}" autocomplete="off" required disabled>
+                    <br>
+                    <label for="street2" class="form-label"><b>&nbspStreet 2</b></label>
+                    <input type="text" class="form-control" id="street2" name="street2" value="{{student.user.street2}}" autocomplete="off" required disabled>
+                    <br>
+                    <label for="city" class="form-label"><b>&nbspCity</b></label>
+                    <input type="text" class="form-control" id="city" name="city" value="{{student.user.city}}" autocomplete="off" required disabled>
+                    <br>
+                    <label for="postalcode" class="form-label"><b>&nbspPostal Code</b></label>
+                    <input type="text" class="form-control" id="postalcode" name="postalcode" value="{{student.user.postalcode}}" autocomplete="off" required disabled>
+                    <br>
+                    <label for="state" class="form-label"><b>&nbspState</b></label>
+                    <input type="text" class="form-control" id="state" name="state" value="{{student.user.state}}" autocomplete="off" required disabled>
+                    <br>
+                </div>
+                
+                <div class="containerbutton">
+                    <a href="{% url 'student_list_view' %}" class="btn btn-secondary back-button">Back</a>
+                    <a href="{%url 'edit_student_detail' student.id %}" class="btn btn-primary edit-button">Edit</a>
+                    <button type="button" class="btn btn-danger delete-button" data-bs-toggle="modal" data-bs-target="#deleteModal{{ student.id }}">Delete</button>
+                </div>  
+                </form>
+                
+                <!-- Delete Confirmation Modal -->
+                <div class="modal fade" id="deleteModal{{ student.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete Student</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to delete the student with the name "{{ student.user.full_name }}"?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <a href="{% url 'delete_student' pk=student.id %}" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+</body>
+<script>
+        const educationLevelSelect = document.getElementById('school_level');
+        const schoolTypeDiv = document.getElementById('primary_school_type');
+        const schoolTypeSelect = document.getElementById('primary_school_type_select');
+        const skLevelDiv = document.getElementById('sk_level');
+        const skLevelSelect = document.getElementById('sk_level_select');
+        const sjkcLevelDiv = document.getElementById('sjkc_level');
+        const sjkcLevelSelect = document.getElementById('sjkc_level_select');
+        const secondaryLevelDiv = document.getElementById('secondary_level');
+        const secondaryLevelSelect = document.getElementById('secondary_level_select');
+        
+        
+        educationLevelSelect.addEventListener('change', () => {
+            if (educationLevelSelect.value === 'kindergarten'){
+                schoolTypeDiv.style.display = 'none';
+                skLevelDiv.style.display = 'none';
+                sjkcLevelDiv.style.display = 'none';
+                secondaryLevelDiv.style.display = 'none';
+
+            }else if (educationLevelSelect.value === 'primary') {
+                schoolTypeDiv.style.display = 'block';
+                skLevelDiv.style.display = 'none';
+                sjkcLevelDiv.style.display = 'none';
+                secondaryLevelDiv.style.display = 'none';
+
+                if(schoolTypeSelect.value === 'sk'){
+                    schoolTypeDiv.style.display = 'block';
+                    skLevelDiv.style.display = 'block';
+                    sjkcLevelDiv.style.display = 'none';
+                    secondaryLevelDiv.style.display = 'none';
+                }else if (schoolTypeSelect.value === 'sjkc'){
+                    schoolTypeDiv.style.display = 'block';
+                    skLevelDiv.style.display = 'none';
+                    sjkcLevelDiv.style.display = 'block';
+                    secondaryLevelDiv.style.display = 'none';
+                }
+           
+            } 
+            else if (educationLevelSelect.value === 'secondary'){
+                schoolTypeDiv.style.display = 'none';
+                skLevelDiv.style.display = 'none';
+                sjkcLevelDiv.style.display = 'none';
+                secondaryLevelDiv.style.display = 'block';
+            }
+        });
+
+        // Define a function to show the appropriate section based on the selected education level
+        function showAppropriateSection(){
+            if (educationLevelSelect.value === 'primary'){
+                schoolTypeDiv.style.display = 'block';
+        
+                if(schoolTypeSelect.value === 'sk'){
+                    schoolTypeDiv.style.display = 'block';
+                    skLevelDiv.style.display = 'block';
+                    sjkcLevelDiv.style.display = 'none';
+                    secondaryLevelDiv.style.display = 'none';
+                }else if (schoolTypeSelect.value === 'sjkc'){
+                    schoolTypeDiv.style.display = 'block';
+                    skLevelDiv.style.display = 'none';
+                    sjkcLevelDiv.style.display = 'block';
+                    secondaryLevelDiv.style.display = 'none';
+                }
+            }else if (educationLevelSelect.value === 'secondary'){
+                secondaryLevelDiv.style.display = 'block';
+            }
+        }
+
+        // Show the appropriate section initially
+        showAppropriateSection();
+
+        // Add an event listener to the educationLevelSelect
+        educationLevelSelect.addEventListener('change',() =>{
+            showAppropriateSection();
+        });
+</script>
+</html>
+
+

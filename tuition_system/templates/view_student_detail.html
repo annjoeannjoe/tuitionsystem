@@ -1,0 +1,123 @@
+{% extends 'sidebar_admin.html' %}
+
+{% block content %}
+<html>
+<style>
+    .tab-pane {
+        background-color: #FFFFFF;
+    }
+
+    /* Add a class for the background container */
+    .content-container {
+        background-color: #F8F8F8; 
+        padding: 15px 5%;
+        padding-top: 10px;
+        padding-bottom: 20px;
+        border-radius: 10px; 
+        margin: 0 auto;
+    }
+
+    .containerbutton {
+        background-color: #FFFFFF;
+        padding: 15px 5%;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        
+    }
+
+    .containerbutton .back-button{
+        margin-right: auto;
+    }
+
+    .edit-button{
+        width: 80px;
+        height: 35px;
+        font-size: 15px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 20px;
+    }
+
+    .delete-button{
+        width: 80px;
+        height: 35px;
+        font-size: 15px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 5px;
+    }
+
+    .back-button{
+        width: 80px;
+        height: 35px;
+        font-size: 15px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    
+</style>
+
+<body>
+    <div class="container mt-5">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#tab1">Student's Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tab2">Enrolment's Details</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <br>
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+            <div id="tab1" class="tab-pane fade show active">
+                {% include 'view_student_detail_tab1.html' %}
+            </div>
+            <div id="tab2" class="tab-pane fade">
+                {% include 'view_student_detail_tab2.html' %}
+            </div>
+        </div>
+    </div>
+
+        
+
+
+</body>
+<script>
+        // Get the active_tab variable from the template
+        var activeTab = "{{ active_tab }}";
+
+        // Set the active tab
+        $(document).ready(function() {
+            $('.nav-tabs a[href="#' + activeTab + '"]').tab('show');
+        });
+        
+        function hideSuccessMessage() {
+                var successMessage = document.querySelector(".alert-success");
+                if (successMessage) {
+                    setTimeout(function() {
+                        successMessage.style.display = "none";
+                    }, 1000); // Adjust the delay (in milliseconds) as needed (e.g., 5000ms = 5 seconds)
+                }
+            }
+            // Call the hideSuccessMessage function when the page loads
+            window.onload = hideSuccessMessage;
+</script>
+
+</html>
+{% endblock %}
+

@@ -1,0 +1,71 @@
+{% extends "sidebar_student.html" %}
+{% block content %} 
+<html>
+    <head>
+        <style>
+
+            table{
+                border-collapse: collapse;
+                border-spacing: 0;
+                width: 100%;
+                border: 1px solid #ddd;
+            }
+
+            th,td{
+                text-align: left;
+                padding: 16px;
+            }
+
+            button[type=submit]{
+                margin-left: 1100px;
+                width: 10%;
+                height: 30px;
+                background-color: #00984F;
+                border: #00984F;
+                border-radius: 4px;
+                color: white;
+            
+            }
+
+
+        </style>
+
+        <body>
+        <br>
+        <h3>List of Classes</h3>
+        <button type="submit">History</button>
+        <br><br>
+
+            <table>
+                <tr>
+                    <th>No.</th>
+                    <th>Class Name</th>
+                    <th>Subject</th>
+                    <th>Class Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                <tr>
+                    <td>1.</td>
+                    <td>F1 English</td>
+                    <td>English</td>
+                    <td>8am - 9am</td>
+                    <td>Enrolled</td>
+                    <td>
+                        <select name="actions" id="actions">
+                            <option value="drop">View</option>
+                            <option value="explore class materials">Explore Class Materials</option>
+                            <option value="drop">Drop</option>
+                        </select>
+                    </td>
+                </tr>
+
+            </table>
+      
+
+            </div>
+        </body>
+    </head>
+</html>
+
+{% endblock %}

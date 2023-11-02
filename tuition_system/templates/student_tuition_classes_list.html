@@ -1,0 +1,700 @@
+{% extends 'sidebar_student.html' %}
+{% block content %}
+<html>
+    <head></head>
+    <style>
+        .classHistoryButton, .evaluationHistoryButton{
+            color: white;
+            text-decoration: none;
+        }
+
+        .class-history-container .btn,
+        .evaluation-history-container .btn {
+            width: 225px; /* Adjust the width to your desired value */
+        }
+
+        button[type=button]:hover .classHistoryButton, 
+        button[type=button]:hover .evaluationHistoryButton{
+            color: white;
+        }
+
+        .class-history-container, 
+        .evaluation-history-container{
+            text-align: right;
+        }
+
+        .class-button{
+            background-color: #19a685 !important;
+            border: #19a685 !important;
+        }
+
+        .class-button:hover{
+            background-color: #137755 !important;
+            border: #137755 !important;
+        }
+
+        .evaluation-button{
+            background-color: #359EDB !important;
+            border: #359EDB !important;
+        }
+
+        .evaluation-button:hover{
+            background-color: #2674A6 !important;
+            border: #2674A6 !important;
+        }
+
+        .table{
+            width: 100%;
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+        }
+
+        th{
+            cursor: pointer;
+        }
+
+        .table th,
+        .table td{
+            padding: 8px;
+        }
+
+        .table th{
+            background-color: #21486c;
+            color: #FFFFFF;
+        }
+
+        .header-wrapper{
+            display: flex;
+            align-items: center;
+        }
+
+        .header-wrapper span{
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-wrapper i{
+            margin-left: 4px;
+        }
+
+        .tab-pane {
+            background-color: #FFFFFF;
+        }
+
+        .comment-button{
+            background-color: #00bec1 !important;
+            border: #00bec1 !important; 
+        }
+
+        .comment-button:hover{
+            background-color: #009496 !important;
+        }
+
+        .table .added_enrolments_table_header, 
+        .table .dropped_enrolments_table_header, 
+        .table .evaluation_history_table_header{
+            background-color: #285785;
+        }
+
+        .badge-lg {
+            font-size: 0.9em; /* Adjust the font size as needed */
+            padding: 0.5em 1em; /* Adjust the padding as needed */
+            border-radius: 10px; /* Adjust the border-radius as needed */
+        }
+
+    </style>
+    <body>
+        <br>
+        <h4><b>List of Classes</b></h4>
+
+        {%if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="class-history-container">
+            <button type="button" class="btn btn-success class-button mb-3" data-bs-toggle="modal" data-bs-target="#classHistoryModal">
+                <a href="#" class="classHistoryButton">Class Enrolment History</a>
+            </button>
+        </div>
+        
+        <div class="evaluation-history-container">
+            <button type="button" class="btn btn-success evaluation-button mb-3" data-bs-toggle="modal" data-bs-target="#evaluationHistoryModal">
+                <a href="#" class="evaluationHistoryButton">Class Evaluation History</a>
+            </button>
+        </div>
+
+        <br>
+        <table id="classes_table" class="table custom-table">
+            <thead>
+                <tr>
+                    <th><span>No.</span></th>
+                    <th onclick="sortTable(1)">
+                        <div class="header-wrapper">
+                            <span>
+                                Class Name
+                                <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                            </span>
+                        </div>
+                    </th>
+                    <th onclick="sortTable(2)">
+                        <div class="header-wrapper">
+                            <span>
+                                Subject Taught
+                                <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                            </span>
+                        </div>
+                    </th>
+                    <th>
+                        <span>Class Time</span>
+                    </th>
+                    <th>
+                        <span>Action</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for classes in classes_enrolled %}
+                {% if not classes.tuition_classes.is_archived %}
+                    <tr>
+                        <td>{{ classes_enrolled.start_index|add:forloop.counter0 }}</td>
+                        <td>{{ classes.tuition_classes.tuition_class_name }}
+                            <h6><span style="font-size: smaller;">{{ classes.tuition_classes.tutor_name }}</span></h6>
+                        </td>
+                        <td>{{ classes.tuition_classes.subject }}</td>
+                        <td>Every {{ classes.tuition_classes.weekly_day }}
+                            <h6><span style="font-size: smaller;">
+                                {{ classes.tuition_classes.general_start_time }} to {{ classes.tuition_classes.general_end_time }}</span></h6>
+                        </td>
+                        <td class="action-buttons">
+                            <button type="button" class="btn btn-primary comment-button" data-bs-toggle="modal" data-bs-target="#evaluateClassModal{{ classes.tuition_classes.id }}"><i class="fas fa-comment-alt"></i></button>
+                            <span style="margin-right: 10px;"></span>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#dropClassModal{{ classes.tuition_classes.id }}"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!--Comment Class Modal-->
+        {% for classes in classes_enrolled %}
+        <div class="modal fade" id="evaluateClassModal{{ classes.tuition_classes.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><b>Evaluate Class</b></h5>
+                        <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-labelledby="Close"></button>
+                    </div>
+                    <form id="commentForm" method="POST" action="{% url 'student_add_evaluation' classes.tuition_classes.id %}">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            
+                            <b><i>Evaluation for class </i></b>
+                            <b><i>"{{ classes.tuition_classes.tuition_class_name }}"</i></b>
+                            
+                            <br><br>
+                            <label for="evaluation_content" class="form-label"><b>Evaluation Content</b></label>
+                            <textarea name="evaluation_content" rows="4" cols="55" class="form-control" required></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Evaluate</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!--Drop Class Modal-->
+        {% for classes in classes_enrolled %}
+        <div class="modal fade" id="dropClassModal{{ classes.tuition_classes.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><b>Drop Class</b></h5>
+                        <button type="button" class="btn btn-close" data-bs-dismiss="modal"  aria-labelledby="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to drop the class with the name {{ classes.tuition_classes.tuition_class_name }}?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <a href="{% url 'student_drop_class' classes.tuition_classes.id %}"  class="btn btn-danger">Drop</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!--Class Enrolment History Modal-->
+        <div class="modal fade" id="classHistoryModal" tabindex="-1" aria-label="displayHistoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="classHistoryModalLabel"><b>Class Add Drop History</b></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                  
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#addHistory">Add Class History</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#dropHistory">Drop Class History</a>
+                                </li>
+                            </ul>
+                            <br>
+                            <div class="tab-content">
+                                <div id="addHistory" class="tab-pane fade show active">
+                                    <table id="added_enrolments_table" class="table custom-table">
+                                        <thead>
+                                            <tr>
+                                                <th class="added_enrolments_table_header" onclick="sortAddHistoryTable(0)">
+                                                    <div class="header-wrapper">
+                                                        <span>
+                                                            Class Name
+                                                            <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                                <th class="added_enrolments_table_header" onclick="sortAddHistoryTable(1)">
+                                                    <div class="header-wrapper">
+                                                        <span>Subject
+                                                            <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                                <th class="added_enrolments_table_header"> 
+                                                    <span>Class Time</span>
+                                                </th>
+                                                <th class="added_enrolments_table_header" onclick="sortAddHistoryTable(3)">
+                                                    <div class="header-wrapper">
+                                                        <span>
+                                                            Enrolment Status
+                                                            <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                                <th class="added_enrolments_table_header" onclick="sortAddHistoryTable(4)">
+                                                    <div class="header-wrapper">
+                                                        <span>
+                                                            Request Status
+                                                            <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                                <th class="added_enrolments_table_header" onclick="sortAddHistoryTable(5)">
+                                                    <div class="header-wrapper">
+                                                        <span>
+                                                            Request Responded At
+                                                            <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for added_enrolment in added_enrolments %}
+                                            <tr>
+                                                <td>{{ added_enrolment.tuition_classes.tuition_class_name }}
+                                                    <h6><span style="font-size: smaller;">{{ added_enrolment.tuition_classes.tutor_name }}</span></h6>
+                                                </td>
+                                                <td>{{ added_enrolment.tuition_classes.subject }}</td>
+                                                <td>Every {{ added_enrolment.tuition_classes.weekly_day }}
+                                                    <h6><span style="font-size: smaller;">{{ added_enrolment.tuition_classes.general_start_time }} to {{ added_enrolment.tuition_classes.general_end_time }}</span></h6>
+                                                </td>
+                                                <td>{{ added_enrolment.enrolment_status }}</td>
+                                                <td>
+                                                    {% if added_enrolment.request_status == 'Accepted' %}
+                                                        <span class="badge rounded-pill bg-success badge-lg ">Accepted</span>
+                                                    {% elif added_enrolment.request_status == 'Rejected' %}
+                                                        <span class="badge rounded-pill bg-danger badge-lg">Rejected</span>
+                                                    {% elif added_enrolment.request_status == 'Pending' %}
+                                                        <span class="badge rounded-pill bg-warning badge-lg">Pending</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ added_enrolment.request_responded_at|date:"Y-m-d H:i:s" }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div id="dropHistory" class="tab-pane fade">
+                                    <table id="dropped_enrolments_table" class="table custom-table">
+                                        <thead>
+                                            <tr>
+                                                <th class="dropped_enrolments_table_header" onclick="sortDropHistoryTable(0)">
+                                                    <div class="header-wrapper">
+                                                        <span>
+                                                            Class Name
+                                                            <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                                <th class="dropped_enrolments_table_header" onclick="sortDropHistoryTable(1)">
+                                                    <div class="header-wrapper">
+                                                        <span>
+                                                            Subject
+                                                            <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                                <th class="dropped_enrolments_table_header">
+                                                    <span>Class Time</span>
+                                                </th>
+                                                <th class="dropped_enrolments_table_header" onclick="sortDropHistoryTable(3)">
+                                                    <div class="header-wrapper">
+                                                        <span>
+                                                            Enrolment Status
+                                                            <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                                <th class="dropped_enrolments_table_header" onclick="sortDropHistoryTable(4)">
+                                                    <div class="header-wrapper">
+                                                        <span>
+                                                            Request Status
+                                                            <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                                <th class="dropped_enrolments_table_header" onclick="sortDropHistoryTable(5)">
+                                                    <div class="header-wrapper">
+                                                        <span>
+                                                            Request Responded At
+                                                            <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for dropped_enrolment in dropped_enrolments %}
+                                            <tr>
+                                                <td>{{ dropped_enrolment.tuition_classes.tuition_class_name }}
+                                                    <h6><span style="font-size: smaller;">{{ dropped_enrolment.tuition_classes.tutor_name }}</span></h6>
+                                                </td>
+                                                <td>{{ dropped_enrolment.tuition_classes.subject }}</td>
+                                                <td>Every {{ dropped_enrolment.tuition_classes.weekly_day }}
+                                                    <h6><span style="font-size: smaller;">{{ dropped_enrolment.tuition_classes.general_start_time }} to {{ dropped_enrolment.tuition_classes.general_end_time }}</span></h6>
+                                                </td>
+                                                <td>{{ dropped_enrolment.enrolment_status }}</td>
+                                                <td>
+                                                    {% if dropped_enrolment.request_status == 'Accepted' %}
+                                                        <span class="badge rounded-pill bg-success badge-lg ">Accepted</span>
+                                                    {% elif dropped_enrolment.request_status == 'Rejected' %}
+                                                        <span class="badge rounded-pill bg-danger badge-lg">Rejected</span>
+                                                    {% elif dropped_enrolment.request_status == 'Pending' %}
+                                                        <span class="badge rounded-pill bg-warning badge-lg">Pending</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ dropped_enrolment.request_responded_at|date:"Y-m-d H:i:s" }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Class Evaluation History Modal-->
+        <div class="modal fade" id="evaluationHistoryModal" tabindex="-1" aria-label="displayEvaluationModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="evaluationHistoryModalLabel"><b>Class Evaluation History</b></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table id="evaluation_history_table" class="table custom-table">
+                            <thead>
+                                <tr>
+                                    <th class="evaluation_history_table_header" onclick="sortEvaluationHistoryTable(0)">
+                                        <div class="header-wrapper">
+                                            <span>
+                                                Class Name
+                                                <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                            </span>
+                                        </div>
+                                    </th>
+                                    <th class="evaluation_history_table_header">
+                                        <span>Evaluation Content</span>
+                                    </th>
+                                    <th class="evaluation_history_table_header" onclick="sortEvaluationHistoryTable(2)">
+                                        <div class="header-wrapper">
+                                            <span>
+                                                Created At
+                                                <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                            </span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for evaluation in student_evaluations %}
+                                <tr>
+                                    <td>{{ evaluation.tuition_classes.tuition_class_name }}</td>
+                                    <td>{{ evaluation.subject_evaluation_content }}</td>
+                                    <td>{{ evaluation.created_at|date:"Y-m-d H:i:s" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <br>
+        <!--Boostrap Pagination Component-->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+                {% if classes_enrolled.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ classes_enrolled.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+
+                {% for i in page_range %}
+                    {% if i == classes_enrolled.number %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ i }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if classes_enrolled.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ classes_enrolled.next_page_number }}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ classes_enrolled.paginator.num_pages }}">Last</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    </body>
+    <script>
+        function sortTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("classes_table"); // Use the correct table id
+            switching = true;
+            dir = "asc";
+            
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    
+                    // Extracting the text content from different columns
+                    x = rows[i].getElementsByTagName("td")[n].textContent.trim(); // Use textContent to get the text
+                    y = rows[i + 1].getElementsByTagName("td")[n].textContent.trim(); // Use textContent to get the text
+                    
+                    // Compare using localeCompare for case-insensitive sorting
+                    var compareResult = x.localeCompare(y, undefined, { sensitivity: 'base' });
+                    
+                    if (dir == "asc") {
+                        if (compareResult > 0) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (compareResult < 0) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+
+        function sortAddHistoryTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("added_enrolments_table"); // Use the correct table id
+            switching = true;
+            dir = "asc";
+            
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    
+                    // Extracting the text content from different columns
+                    x = rows[i].getElementsByTagName("td")[n].textContent.trim(); // Use textContent to get the text
+                    y = rows[i + 1].getElementsByTagName("td")[n].textContent.trim(); // Use textContent to get the text
+                    
+                    // Compare using localeCompare for case-insensitive sorting
+                    var compareResult = x.localeCompare(y, undefined, { sensitivity: 'base' });
+                    
+                    if (dir == "asc") {
+                        if (compareResult > 0) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (compareResult < 0) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+
+        function sortDropHistoryTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("dropped_enrolments_table"); // Use the correct table id
+            switching = true;
+            dir = "asc";
+            
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    
+                    // Extracting the text content from different columns
+                    x = rows[i].getElementsByTagName("td")[n].textContent.trim(); // Use textContent to get the text
+                    y = rows[i + 1].getElementsByTagName("td")[n].textContent.trim(); // Use textContent to get the text
+                    
+                    // Compare using localeCompare for case-insensitive sorting
+                    var compareResult = x.localeCompare(y, undefined, { sensitivity: 'base' });
+                    
+                    if (dir == "asc") {
+                        if (compareResult > 0) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (compareResult < 0) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+
+        function sortEvaluationHistoryTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("evaluation_history_table"); // Use the correct table id
+            switching = true;
+            dir = "asc";
+            
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    
+                    // Extracting the text content from different columns
+                    x = rows[i].getElementsByTagName("td")[n].textContent.trim(); // Use textContent to get the text
+                    y = rows[i + 1].getElementsByTagName("td")[n].textContent.trim(); // Use textContent to get the text
+                    
+                    // Compare using localeCompare for case-insensitive sorting
+                    var compareResult = x.localeCompare(y, undefined, { sensitivity: 'base' });
+                    
+                    if (dir == "asc") {
+                        if (compareResult > 0) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (compareResult < 0) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+
+        // Function to hide the success message after a delay
+        function hideSuccessMessage() {
+            var successMessage = document.querySelector(".alert-success");
+            if (successMessage) {
+                setTimeout(function() {
+                    successMessage.style.display = "none";
+                }, 1500); // Adjust the delay (in milliseconds) as needed (e.g., 5000ms = 5 seconds)
+            }
+        }
+        // Call the hideSuccessMessage function when the page loads
+        window.onload = hideSuccessMessage;
+
+
+
+
+        
+    </script>
+</html>
+{% endblock %}

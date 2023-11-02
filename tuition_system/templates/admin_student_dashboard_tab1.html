@@ -1,0 +1,190 @@
+<html>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .tab-pane{
+            background-color: #FFFFFF;
+        }
+
+        .card{
+            border: 1px splod #e7e7e7;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(160, 160, 160, 0.2);
+            margin-top: 20px;
+            margin-right: 20px;
+        }
+
+        .card-body{
+            padding: 20px;
+        }
+    </style>
+
+    <body>
+        <br>
+        <div class="container">
+            <div class="row">
+
+                <!--First Card-->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="font-size: 24px; font-weight: bold;">
+                                {{ total_students }}
+                            </div>
+                            <div style="font-size: 16px; color: gray;">
+                                Total Students
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Second Card-->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="font-size: 24px; font-weight: bold;">
+                                {{ active_students.count }}
+                            </div>
+                            <div style="font-size: 16px; color: gray;">
+                                Active Students
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Third Card-->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="font-size: 24px; font-weight: bold;">
+                                {{ archived_students.count }}
+                            </div>
+                            <div style="font-size: 16px; color: gray;">
+                                Archived Students
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br><br><br>
+
+            <div class="row">
+                <!-- Chart Cards -->
+                <div class="col-md-6">
+                    <div class="card chart-card">
+                        <div class="card-body">
+                            <div id="school-levels-bar-chart" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card chart-card">
+                        <div class="card-body">
+                            <div id="enrollments-line-chart" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br><br>
+            <!--<div class="row">
+                 Chart Cards
+                <div class="col-md-12">
+                    <div class="card chart-card">
+                        <div class="card-body">               
+                            <div id="student-sources-bar-chart" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            
+            </div>-->
+
+            <script>
+                var student_school_levels = {{ student_school_levels|safe }};
+                var student_school_levels_count = {{ student_school_levels_count|safe }};
+            
+                // Capitalize the first letter of each string
+                student_school_levels = student_school_levels.map(function(level) {
+                    return level.charAt(0).toUpperCase() + level.slice(1);
+                });
+
+                // Custom sorting function to sort slices from largest to smallest
+                var customSortOrder = (a, b) => {
+                    return student_school_levels_count[student_school_levels.indexOf(b)] - student_school_levels_count[student_school_levels.indexOf(a)];
+                };
+            
+                var data = [{
+                    labels: student_school_levels,  // Use "labels" for pie chart
+                    values: student_school_levels_count,
+                    type: 'pie',  // Change from 'bar' to 'pie'
+                    marker: {
+                        colors: ['#B5D1FF', '#009688', '#FFA07A', '#FFD700', '#FF69B4']  // Customize slice colors
+                    }
+                }];
+            
+                var layout = {
+                    title: {
+                        text: '<b>Students Distribution by School Levels</b>',
+                        font:{
+                            size: 20,
+                            family: 'Arial, sans-serif',
+                            color: 'black',
+                        },
+                    },
+                    sort: customSortOrder,
+                };
+            
+                Plotly.newPlot('school-levels-bar-chart', data, layout);
+            </script>
+
+            <script>
+                var months = {{ months|safe }};
+                var enrollments = {{ enrollments|safe }};
+
+                var data = [{
+                    x: months,
+                    y: enrollments,
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    marker: {color: '#009688'},
+                    line: {color: '#009688'}
+                }];
+
+                var layout={
+                    title: {
+                        text: '<b>Student Enrollments Over Time</b>',
+                        font:{
+                            size: 20,
+                            family: 'Arial, sans-serif',
+                            color: 'black',
+                        },
+                    },
+                    xaxis: {
+                        title: 'Month',
+                        tickvals: months,
+                        ticktext: months.map(formatDateLabel),
+                        tickangle: 45,
+                    },
+                    yaxis: {
+                        title: 'Number of Enrollments'
+                    }
+                };
+
+                function formatDateLabel(dateString){
+                    var date = new Date (dateString);
+                    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                    return monthNames[date.getMonth()] + ' ' + date.getFullYear();
+                }
+
+                Plotly.newPlot('enrollments-line-chart', data, layout);
+            </script>
+
+        </div>
+
+
+    </body>
+
+    <script>
+
+    </script>
+</html>

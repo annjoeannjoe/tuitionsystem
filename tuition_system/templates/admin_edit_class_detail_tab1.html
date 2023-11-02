@@ -1,0 +1,164 @@
+<html>
+    <style>
+        /* Add a class for the background container */
+        .tab1-content-container{
+            background-color: #F8F8F8;
+            padding: 15px 5%;
+            padding-top: 10px;
+            padding-bottom: 20px;
+            border-radius: 10px;
+            margin: 0 auto;
+        }
+
+        .containerbutton{
+            background-color: #FFFFFF;
+            padding: 15px 5%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .btn-primary{
+            width: 80px;
+            height: 35px;
+            font-size: 15px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-secondary{
+            width: 80px;
+            height: 35px;
+            font-size: 15px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+    </style>
+    <body>
+        <br>
+        <form method="POST" id="saveForm" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!--Wrap only the content in Tab 1 within the container div-->
+            <div class="tab1-content-container">
+
+                <br>
+                <label for="class_name" class="form-label"><b>&nbspClass Name</b></label>
+                <input type="text" class="form-control" id="class_name" name="class_name" value="{{ tuition_classes.tuition_class_name }}" autocomplete="off" required>
+
+                <br>
+                <label for="subject" class="form-label"><b>&nbspSubject</b></label>
+                <select id="subject" name="subject" class="form-control" required>
+                    <option value="" selected disabled>Select Subject</option>
+                    <option value="BC" {% if tuition_classes.subject == 'BC' %}selected{% endif %}>BC</option>
+                    <option value="BC Essay" {% if tuition_classes.subject == 'BC Essay' %}selected{% endif %}>BC Essay</option>
+                    <option value="BI" {% if tuition_classes.subject == 'BI' %}selected{% endif %}>BI</option>
+                    <option value="BI Extra" {% if tuition_classes.subject == 'BI Extra' %}selected{% endif %}>BI Extra</option>
+                    <option value="BM" {% if tuition_classes.subject == 'BM' %}selected{% endif %}>BM</option>
+                    <option value="Geografi" {% if tuition_classes.subject == 'Geografi' %}selected{% endif %}>Geografi</option>
+                    <option value="Karangan" {% if tuition_classes.subject == 'Karangan' %}selected{% endif %}>Karangan</option>
+                    <option value="Math" {% if tuition_classes.subject == 'Math' %}selected{% endif %}>Math</option>
+                    <option value="Math Extra" {% if tuition_classes.subject == 'Math Extra' %}selected{% endif %}>Math Extra</option>
+                    <option value="RBT" {% if tuition_classes.subject == 'RBT' %}selected{% endif %}>RBT</option>
+                    <option value="Science" {% if tuition_classes.subject == 'Science' %}selected{% endif %}>Science</option>
+                    <option value="Sejarah" {% if tuition_classes.subject == 'Sejarah' %}selected{% endif %}>Sejarah</option>
+                </select>
+
+                <br>
+                <label for="tutor_name" class="form-label"><b>&nbspTutor</b></label>
+                <input type="text" class="form-control" id="tutor_name" name="tutor_name" value="{{ tuition_classes.tutor_name }}" autocomplete="off" required>
+
+                <br>
+                <label for="study_level" class="form-label"><b>&nbspStudy Level</b></label>
+                <select id="study_level" name="study_level" class="form-control" required>
+                    <option value="" disabled selected>Select Study Level</option>
+                    <option value="Kindergarten" {% if tuition_classes.tuition_class_study_level == 'Kindergarten' %}selected{% endif %}>Kindergarten</option>
+                    <option value="Primary sk std1" {% if tuition_classes.tuition_class_study_level == 'Primary sk std1' %}selected{% endif %}>Primary SK Standard 1</option>
+                    <option value="Primary sk std2" {% if tuition_classes.tuition_class_study_level == 'Primary sk std2' %}selected{% endif %}>Primary SK Standard 2</option>
+                    <option value="Primary sk std3" {% if tuition_classes.tuition_class_study_level == 'Primary sk std3' %}selected{% endif %}>Primary SK Standard 3</option>
+                    <option value="Primary sk std4" {% if tuition_classes.tuition_class_study_level == 'Primary sk std4' %}selected{% endif %}>Primary SK Standard 4</option>
+                    <option value="Primary sk std5" {% if tuition_classes.tuition_class_study_level == 'Primary sk std5' %}selected{% endif %}>Primary SK Standard 5</option>
+                    <option value="Primary sk std6" {% if tuition_classes.tuition_class_study_level == 'Primary sk std6' %}selected{% endif %}>Primary SK Standard 6</option>
+                    <option value="Primary sjkc std1" {% if tuition_classes.tuition_class_study_level == 'Primary sjkc std1' %}selected{% endif %}>Primary SJKC Standard 1</option>
+                    <option value="Primary sjkc std2" {% if tuition_classes.tuition_class_study_level == 'Primary sjkc std2' %}selected{% endif %}>Primary SJKC Standard 2</option>
+                    <option value="Primary sjkc std3" {% if tuition_classes.tuition_class_study_level == 'Primary sjkc std3' %}selected{% endif %}>Primary SJKC Standard 3</option>
+                    <option value="Primary sjkc std4" {% if tuition_classes.tuition_class_study_level == 'Primary sjkc std4' %}selected{% endif %}>Primary SJKC Standard 4</option>
+                    <option value="Primary sjkc std5" {% if tuition_classes.tuition_class_study_level == 'Primary sjkc std5' %}selected{% endif %}>Primary SJKC Standard 5</option>
+                    <option value="Primary sjkc std6" {% if tuition_classes.tuition_class_study_level == 'Primary sjkc std6' %}selected{% endif %}>Primary SJKC Standard 6</option>
+                    <option value="Secondary form1" {% if tuition_classes.tuition_class_study_level == 'Secondary form1' %}selected{% endif %}>Secondary Form 1</option>
+                    <option value="Secondary form2" {% if tuition_classes.tuition_class_study_level == 'Secondary form2' %}selected{% endif %}>Secondary Form 2</option>
+                    <option value="Secondary form3" {% if tuition_classes.tuition_class_study_level == 'Secondary form3' %}selected{% endif %}>Secondary Form 3</option>
+                    <option value="Secondary form4" {% if tuition_classes.tuition_class_study_level == 'Secondary form4' %}selected{% endif %}>Secondary Form 4</option>
+                    <option value="Secondary form5" {% if tuition_classes.tuition_class_study_level == 'Secondary form5' %}selected{% endif %}>Secondary Form 5</option>
+                </select>
+
+                <br>
+                <label for="monthly_fee" class="form-label"><b>&nbspMonthly Fee</b></label>
+                <input type="text" class="form-control" id="monthly_fee" name="monthly_fee" value="{{ tuition_classes.monthly_fee }}" autocomplete="off" required>
+
+                <br>
+                <label for="weekly_day" class="form-label"><b>&nbspWeekly Day</b></label>
+                <select id="weekly_day" name="weekly_day" class="form-control" required>
+                    <option value="" disabled selected>Select Weekly Day</option>
+                    <option value="Monday" {% if tuition_classes.weekly_day == 'Monday' %}selected{% endif %}>Monday</option>
+                    <option value="Tuesday" {% if tuition_classes.weekly_day == 'Tuesday' %}selected{% endif %}>Tuesday</option>
+                    <option value="Wednesday" {% if tuition_classes.weekly_day == 'Wednesday' %}selected{% endif %}>Wednesday</option>
+                    <option value="Thursday" {% if tuition_classes.weekly_day == 'Thursday' %}selected{% endif %}>Thursday</option>
+                    <option value="Friday" {% if tuition_classes.weekly_day == 'Friday' %}selected{% endif %}>Friday</option>
+                    <option value="Saturday" {% if tuition_classes.weekly_day == 'Saturday' %}selected{% endif %}>Saturday</option>
+                    <option value="Sunday" {% if tuition_classes.weekly_day == 'Sunday' %}selected{% endif %}>Sunday</option>
+                </select>
+
+                <br>
+                <label for="start_time" class="form-label"><b>&nbspStart Time</b></label>
+                <input type="time" class="form-control" id="start_time" name="start_time" value="{{ tuition_classes.general_start_time|time:'H:i' }}" required>
+                
+                <br>
+                <label for="end_time" class="form-label"><b>&nbspEnd Time</b></label>
+                <input type="time" class="form-control" id="end_time" name="end_time" value="{{ tuition_classes.general_end_time|time:'H:i' }}" required>
+
+                <br>
+                <label for="start_date" class="form-label"><b>&nbspStart Date</b></label>
+                <input type="date" class="form-control" id="start_date" name="start_date" value="{{ tuition_classes.class_start_date|date:'Y-m-d' }}" required>
+
+                <br>
+                <label for="end_date" class="form-label"><b>&nbspEnd Date</b></label>
+                <input type="date" class="form-control" id="end_date" name="end_date" value="{{ tuition_classes.class_end_date|date:'Y-m-d' }}" required> 
+                <br>
+            </div>
+
+            <!--Button Container-->
+            <div class="containerbutton">
+                <a href="{% url 'admin_view_class_detail' tuition_classes.id %}" class="btn btn-secondary">Cancel</a>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModal">Save</button>
+            </div>
+        </form>
+
+        <!--Save Confirmation Modal-->
+        <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><b>Confirm Save</b></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure want to save the changes?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="margin-right: 10px;">Cancel</button>
+                        <button type="submit" form="saveForm" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    
+</html>

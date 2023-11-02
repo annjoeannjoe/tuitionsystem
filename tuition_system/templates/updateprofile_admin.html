@@ -1,0 +1,147 @@
+{% extends "sidebar_admin.html" %}
+
+{% block content %} 
+<html>
+    <head>
+
+    </head>
+    <style>
+        .container{
+            background-color: #F8F8F8;
+            padding: 15px 5%; /*Decrease left and right padding*/
+            padding-top: 10px;
+            padding-bottom: 20px;
+            border-radius: 10px;
+            max-width: 800px; /*Set maximum width*/
+            margin: 0 auto;
+        }    
+
+        .containerbutton{
+            max-width: 800px;
+            background-color: #FFFFFF;
+            padding: 15px 5%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center; 
+            justify-content: flex-end;
+        }
+            
+        .form-control:focus{
+            outline: none;
+            border-color: #1E78FF;
+            box-shadow: 0 0 3px #1E78FF;
+        }
+
+        .btn-primary{
+            width: 80px;
+            height: 35px;                
+            font-size: 15px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-secondary{
+            width: 80px;
+            height: 35px;
+            font-size: 15px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+        }
+    </style>
+
+    <body>
+        <br>
+        <h5><center><b>Update Profile Details</b></center></h5>
+        <br>
+        
+        <div class="container">
+            <form method ="POST" id="saveForm" action="{% url 'updateprofile_admin' %}"> <!--action attribute: specifies the URL to which the form data should be submitted when the user submits the form-->
+                {% csrf_token %} <!--for security concerns: to prevent a CSRF Attack-->
+                
+                <!--Display Message -->
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <div class="mb-3">
+                    <br>
+                    <label for="full_name" class="form-label"><b>&nbspFull Name</b></label>
+                    <input type="text" class="form-control" id="full_name" name="full_name" value="{{user.full_name}}" autocomplete="off" required>
+                    
+                    <br>
+                    <label for="email" class="form-label"><b>&nbspEmail</b></label>
+                    <input type="text" class="form-control" id="email" name="email" value="{{user.email}}" disabled>
+                    
+                    <br>
+                    <label for="phone_no" class="form-label"><b>&nbspPhone No.</b></label>
+                    <input type="text" class="form-control" id="phone_no" name="phone_no" value="{{user.phone_no}}" autocomplete="off" required>
+                    
+                    <br><br>
+                    <label for="adminhomeaddress" class="form-label"><b>&nbspHome Address</b></label>
+                    <br>
+                    <label for="street1" class="form-label"><b>&nbspStreet 1</b></label>
+                    <input type="text" class="form-control" id="street1" name="street1" value="{{user.street1}}" autocomplete="off" required>
+                    <br>
+                    <label for="street2" class="form-label"><b>&nbspStreet 2</b></label>
+                    <input type="text" class="form-control" id="street2" name="street2" value="{{user.street2}}" autocomplete="off" required>
+                    <br>
+                    <label for="city" class="form-label"><b>&nbspCity</b></label>
+                    <input type="text" class="form-control" id="city" name="city" value="{{user.city}}" autocomplete="off" required>
+                    <br>
+                    <label for="postalcode" class="form-label"><b>&nbspPostal Code</b></label>
+                    <input type="text" class="form-control" id="postalcode" name="postalcode" value="{{user.postalcode}}" autocomplete="off" required>
+                    <br>
+                    <label for="state" class="form-label"><b>&nbspState</b></label>
+                    <input type="text" class="form-control" id="state" name="state" value="{{user.state}}" autocomplete="off" required> 
+                </div>
+        </div>
+        <div class="containerbutton">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModal">Save</button>
+        </div>
+        </form> <!--/form need to put at here so that the save button can work-->
+    
+        <!--Save Confirmation Modal-->
+        <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><b>Confirm Save</b></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure want to save the changes?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="margin-right: 10px;">Cancel</button>
+                        <button type="submit" form= "saveForm" class="btn btn-primary">Save</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+
+    <script>
+        function hideSuccessMessage() {
+            var successMessage = document.querySelector(".alert-success");
+            if (successMessage) {
+                setTimeout(function() {
+                    successMessage.style.display = "none";
+                }, 2000); // Adjust the delay (in milliseconds) as needed (e.g., 5000ms = 5 seconds)
+            }
+        }
+        // Call the hideSuccessMessage function when the page loads
+        window.onload = hideSuccessMessage;
+    </script>
+</html>
+
+{% endblock %}

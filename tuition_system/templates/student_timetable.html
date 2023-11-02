@@ -1,0 +1,585 @@
+{% extends 'sidebar_student.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 95%;
+            margin: 0 auto;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: center;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .class-box{
+            border-radius: 8px;
+            padding: 5px;
+            margin-bottom: 10px;
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+            word-wrap: break-word;
+            overflow: hidden;
+            white-space: normal;
+        }
+
+        .time {
+            font-size: 14px; /* Make the time wording smaller */
+            margin-top: 10px;
+        }
+
+        .tutor {
+            font-size: 14px;
+            color: grey; /* Set the tutor name to grey color */
+        }
+
+        .bc {
+            background-color: #FFE599; 
+            border: #FFE599;
+            color: white;
+        }
+
+        .bc_essay {
+            background-color: #FFD968; 
+            border: #FFD968;
+            color: white;
+        }
+
+        .bi {
+            background-color: #F1CBA2; 
+            border: #F1CBA2;
+            color: white;
+        }
+
+        .bi_extra {
+            background-color: #F6B26B; 
+            border: #F6B26B;
+            color: white;
+        }
+
+        .bm {
+            background-color: #F1C2B9; 
+            border: #F1C2B9;
+            color: white;
+        }
+
+        .karangan {
+            background-color: #F3978B; 
+            border: #F3978B;
+            color: white;
+        }
+
+        .geografi {
+            background-color: #D1C69F; 
+            border: #D1C69F;
+            color: white;
+        }
+
+        .math {
+            background-color: #C1E8B2;
+            border: #C1E8B2;
+            color: white;
+        }
+
+        .math_extra {
+            background-color: #93C47D; 
+            border: #93C47D;
+            color: white;
+        }
+
+        .rbt {
+            background-color: #CCCCCC; 
+            border: #CCCCCC;
+            color: white;
+        }
+
+        .science {
+            background-color: #8FB6FA; 
+            border: #8FB6FA;
+            color: white;
+        }
+
+        .sejarah {
+            background-color: #B6A3E3; 
+            border: #B6A3E3;
+            color: white;
+        }
+
+        .default {
+            background-color: #8D8D8D; 
+            border: #8D8D8D;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+    <br>
+    <h5><b>Timetable</b></h5>
+    <br>
+
+    <table>
+        <tr>
+            <th></th>  <!-- Empty cell for spacing -->
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+            <th>Sunday</th>
+        </tr>
+        {% for hour in timetable_hours %}
+        <tr>
+            <td class="time-column">{{ hour }}</td>
+
+            <!--Monday-->
+            <td>
+                {% for class_info in timetable_data %}
+                    {% if class_info.weekly_day == 'Monday' %}
+                        {% if class_info.time == hour %}
+                        <br>
+                            <div class="class-box 
+                                {% if class_info.subject == 'BC' %}bc
+                                {% elif class_info.subject == 'BC Essay' %}bc_essay
+                                {% elif class_info.subject == 'BI' %}bi
+                                {% elif class_info.subject == 'BI Extra' %}bi_extra
+                                {% elif class_info.subject == 'BM' %}bm
+                                {% elif class_info.subject == 'Geografi' %}geografi
+                                {% elif class_info.subject == 'Karangan' %}karangan
+                                {% elif class_info.subject == 'Math' %}math
+                                {% elif class_info.subject == 'Math Extra' %}math_extra
+                                {% elif class_info.subject == 'RBT' %}rbt
+                                {% elif class_info.subject == 'Science' %}science
+                                {% elif class_info.subject == 'Sejarah' %}sejarah
+                                {% else %}default
+                                {% endif %}">
+                                {{ class_info.class_name }}<br>
+                            </div>
+                            <div class="time">
+                                {{ class_info.start_time }} - {{ class_info.end_time}}<br>
+                            </div>
+                            <div class="tutor">
+                                {{ class_info.tutor }}<br>
+                            </div>
+                            
+                        {% elif class_info.start_time < hour and class_info.end_time > hour %}
+                        <br>
+                            <!-- Display the class in both hourly slots -->
+                            <div class="class-box 
+                                {% if class_info.subject == 'BC' %}bc
+                                {% elif class_info.subject == 'BC Essay' %}bc_essay
+                                {% elif class_info.subject == 'BI' %}bi
+                                {% elif class_info.subject == 'BI Extra' %}bi_extra
+                                {% elif class_info.subject == 'BM' %}bm
+                                {% elif class_info.subject == 'Geografi' %}geografi
+                                {% elif class_info.subject == 'Karangan' %}karangan
+                                {% elif class_info.subject == 'Math' %}math
+                                {% elif class_info.subject == 'Math Extra' %}math_extra
+                                {% elif class_info.subject == 'RBT' %}rbt
+                                {% elif class_info.subject == 'Science' %}science
+                                {% elif class_info.subject == 'Sejarah' %}sejarah
+                                {% else %}default
+                                {% endif %}">
+                                {{ class_info.class_name }}<br>
+                            </div>
+                            <div class="time">
+                                {{ class_info.start_time }} - {{ class_info.end_time}}<br>
+                            </div>
+                            <div class="tutor">
+                                {{ class_info.tutor }}<br>
+                            </div>
+                        {% endif %}
+        
+                    {% endif %}
+                {% endfor %}
+            </td>
+
+            <!--Tuesday-->
+            <td>
+                {% for class_info in timetable_data %}
+                    {% if class_info.weekly_day == 'Tuesday' %}
+                        {% if class_info.time == hour %}
+                        <br>
+                            <div class="class-box 
+                                {% if class_info.subject == 'BC' %}bc
+                                {% elif class_info.subject == 'BC Essay' %}bc_essay
+                                {% elif class_info.subject == 'BI' %}bi
+                                {% elif class_info.subject == 'BI Extra' %}bi_extra
+                                {% elif class_info.subject == 'BM' %}bm
+                                {% elif class_info.subject == 'Geografi' %}geografi
+                                {% elif class_info.subject == 'Karangan' %}karangan
+                                {% elif class_info.subject == 'Math' %}math
+                                {% elif class_info.subject == 'Math Extra' %}math_extra
+                                {% elif class_info.subject == 'RBT' %}rbt
+                                {% elif class_info.subject == 'Science' %}science
+                                {% elif class_info.subject == 'Sejarah' %}sejarah
+                                {% else %}default
+                                {% endif %}">
+                                {{ class_info.class_name }}<br>
+                            </div>
+                            <div class="time">
+                                {{ class_info.start_time }} - {{ class_info.end_time}}<br>
+                            </div>
+                            <div class="tutor">
+                                {{ class_info.tutor }}<br>
+                            </div>
+                            
+                        {% elif class_info.start_time < hour and class_info.end_time > hour %}
+                        <br>
+                            <!-- Display the class in both hourly slots -->
+                            <div class="class-box 
+                                {% if class_info.subject == 'BC' %}bc
+                                {% elif class_info.subject == 'BC Essay' %}bc_essay
+                                {% elif class_info.subject == 'BI' %}bi
+                                {% elif class_info.subject == 'BI Extra' %}bi_extra
+                                {% elif class_info.subject == 'BM' %}bm
+                                {% elif class_info.subject == 'Geografi' %}geografi
+                                {% elif class_info.subject == 'Karangan' %}karangan
+                                {% elif class_info.subject == 'Math' %}math
+                                {% elif class_info.subject == 'Math Extra' %}math_extra
+                                {% elif class_info.subject == 'RBT' %}rbt
+                                {% elif class_info.subject == 'Science' %}science
+                                {% elif class_info.subject == 'Sejarah' %}sejarah
+                                {% else %}default
+                                {% endif %}">
+                                {{ class_info.class_name }}<br>
+                            </div>
+                            <div class="time">
+                                {{ class_info.start_time }} - {{ class_info.end_time}}<br>
+                            </div>
+                            <div class="tutor">
+                                {{ class_info.tutor }}<br>
+                            </div>
+                        {% endif %}
+        
+                    {% endif %}
+                {% endfor %}
+            </td>
+
+            <!--Wednesday-->
+            <td>
+                {% for class_info in timetable_data %}
+                    {% if class_info.weekly_day == 'Wednesday' %}
+                        {% if class_info.time == hour %}
+                        <br>
+                            <div class="class-box 
+                                {% if class_info.subject == 'BC' %}bc
+                                {% elif class_info.subject == 'BC Essay' %}bc_essay
+                                {% elif class_info.subject == 'BI' %}bi
+                                {% elif class_info.subject == 'BI Extra' %}bi_extra
+                                {% elif class_info.subject == 'BM' %}bm
+                                {% elif class_info.subject == 'Geografi' %}geografi
+                                {% elif class_info.subject == 'Karangan' %}karangan
+                                {% elif class_info.subject == 'Math' %}math
+                                {% elif class_info.subject == 'Math Extra' %}math_extra
+                                {% elif class_info.subject == 'RBT' %}rbt
+                                {% elif class_info.subject == 'Science' %}science
+                                {% elif class_info.subject == 'Sejarah' %}sejarah
+                                {% else %}default
+                                {% endif %}">
+                                {{ class_info.class_name }}<br>
+                            </div>
+                            <div class="time">
+                                {{ class_info.start_time }} - {{ class_info.end_time}}<br>
+                            </div>
+                            <div class="tutor">
+                                {{ class_info.tutor }}<br>
+                            </div>
+                            
+                        {% elif class_info.start_time < hour and class_info.end_time > hour %}
+                        <br>
+                            <!-- Display the class in both hourly slots -->
+                            <div class="class-box 
+                                {% if class_info.subject == 'BC' %}bc
+                                {% elif class_info.subject == 'BC Essay' %}bc_essay
+                                {% elif class_info.subject == 'BI' %}bi
+                                {% elif class_info.subject == 'BI Extra' %}bi_extra
+                                {% elif class_info.subject == 'BM' %}bm
+                                {% elif class_info.subject == 'Geografi' %}geografi
+                                {% elif class_info.subject == 'Karangan' %}karangan
+                                {% elif class_info.subject == 'Math' %}math
+                                {% elif class_info.subject == 'Math Extra' %}math_extra
+                                {% elif class_info.subject == 'RBT' %}rbt
+                                {% elif class_info.subject == 'Science' %}science
+                                {% elif class_info.subject == 'Sejarah' %}sejarah
+                                {% else %}default
+                                {% endif %}">
+                                {{ class_info.class_name }}<br>
+                            </div>
+                            <div class="time">
+                                {{ class_info.start_time }} - {{ class_info.end_time}}<br>
+                            </div>
+                            <div class="tutor">
+                                {{ class_info.tutor }}<br>
+                            </div>
+                        {% endif %}
+        
+                    {% endif %}
+                {% endfor %}
+            </td>
+
+            <!--Thursday-->
+            <td>
+                {% for class_info in timetable_data %}
+                    {% if class_info.weekly_day == 'Thursday' %}
+                        {% if class_info.time == hour %}
+                        <br>
+                            <div class="class-box 
+                                {% if class_info.subject == 'BC' %}bc
+                                {% elif class_info.subject == 'BC Essay' %}bc_essay
+                                {% elif class_info.subject == 'BI' %}bi
+                                {% elif class_info.subject == 'BI Extra' %}bi_extra
+                                {% elif class_info.subject == 'BM' %}bm
+                                {% elif class_info.subject == 'Geografi' %}geografi
+                                {% elif class_info.subject == 'Karangan' %}karangan
+                                {% elif class_info.subject == 'Math' %}math
+                                {% elif class_info.subject == 'Math Extra' %}math_extra
+                                {% elif class_info.subject == 'RBT' %}rbt
+                                {% elif class_info.subject == 'Science' %}science
+                                {% elif class_info.subject == 'Sejarah' %}sejarah
+                                {% else %}default
+                                {% endif %}">
+                                {{ class_info.class_name }}<br>
+                            </div>
+                            <div class="time">
+                                {{ class_info.start_time }} - {{ class_info.end_time}}<br>
+                            </div>
+                            <div class="tutor">
+                                {{ class_info.tutor }}<br>
+                            </div>
+                            
+                        {% elif class_info.start_time < hour and class_info.end_time > hour %}
+                        <br>
+                            <!-- Display the class in both hourly slots -->
+                            <div class="class-box 
+                                {% if class_info.subject == 'BC' %}bc
+                                {% elif class_info.subject == 'BC Essay' %}bc_essay
+                                {% elif class_info.subject == 'BI' %}bi
+                                {% elif class_info.subject == 'BI Extra' %}bi_extra
+                                {% elif class_info.subject == 'BM' %}bm
+                                {% elif class_info.subject == 'Geografi' %}geografi
+                                {% elif class_info.subject == 'Karangan' %}karangan
+                                {% elif class_info.subject == 'Math' %}math
+                                {% elif class_info.subject == 'Math Extra' %}math_extra
+                                {% elif class_info.subject == 'RBT' %}rbt
+                                {% elif class_info.subject == 'Science' %}science
+                                {% elif class_info.subject == 'Sejarah' %}sejarah
+                                {% else %}default
+                                {% endif %}">
+                                {{ class_info.class_name }}<br>
+                            </div>
+                            <div class="time">
+                                {{ class_info.start_time }} - {{ class_info.end_time}}<br>
+                            </div>
+                            <div class="tutor">
+                                {{ class_info.tutor }}<br>
+                            </div>
+                        {% endif %}
+        
+                    {% endif %}
+                {% endfor %}
+            </td>
+            
+            <!--Friday-->
+            <td>
+                {% for class_info in timetable_data %}
+                    {% if class_info.weekly_day == 'Friday' %}
+                        {% if class_info.time == hour %}
+                        <br>
+                            <div class="class-box 
+                                {% if class_info.subject == 'BC' %}bc
+                                {% elif class_info.subject == 'BC Essay' %}bc_essay
+                                {% elif class_info.subject == 'BI' %}bi
+                                {% elif class_info.subject == 'BI Extra' %}bi_extra
+                                {% elif class_info.subject == 'BM' %}bm
+                                {% elif class_info.subject == 'Geografi' %}geografi
+                                {% elif class_info.subject == 'Karangan' %}karangan
+                                {% elif class_info.subject == 'Math' %}math
+                                {% elif class_info.subject == 'Math Extra' %}math_extra
+                                {% elif class_info.subject == 'RBT' %}rbt
+                                {% elif class_info.subject == 'Science' %}science
+                                {% elif class_info.subject == 'Sejarah' %}sejarah
+                                {% else %}default
+                                {% endif %}">
+                                {{ class_info.class_name }}<br>
+                            </div>
+                            <div class="time">
+                                {{ class_info.start_time }} - {{ class_info.end_time}}<br>
+                            </div>
+                            <div class="tutor">
+                                {{ class_info.tutor }}<br>
+                            </div>
+                            
+                        {% elif class_info.start_time < hour and class_info.end_time > hour %}
+                        <br>
+                            <!-- Display the class in both hourly slots -->
+                            <div class="class-box 
+                                {% if class_info.subject == 'BC' %}bc
+                                {% elif class_info.subject == 'BC Essay' %}bc_essay
+                                {% elif class_info.subject == 'BI' %}bi
+                                {% elif class_info.subject == 'BI Extra' %}bi_extra
+                                {% elif class_info.subject == 'BM' %}bm
+                                {% elif class_info.subject == 'Geografi' %}geografi
+                                {% elif class_info.subject == 'Karangan' %}karangan
+                                {% elif class_info.subject == 'Math' %}math
+                                {% elif class_info.subject == 'Math Extra' %}math_extra
+                                {% elif class_info.subject == 'RBT' %}rbt
+                                {% elif class_info.subject == 'Science' %}science
+                                {% elif class_info.subject == 'Sejarah' %}sejarah
+                                {% else %}default
+                                {% endif %}">
+                                {{ class_info.class_name }}<br>
+                            </div>
+                            <div class="time">
+                                {{ class_info.start_time }} - {{ class_info.end_time}}<br>
+                            </div>
+                            <div class="tutor">
+                                {{ class_info.tutor }}<br>
+                            </div>
+                        {% endif %}
+        
+                    {% endif %}
+                {% endfor %}
+            </td>
+
+            <!--Saturday-->
+            <td>
+                {% for class_info in timetable_data %}
+                    {% if class_info.weekly_day == 'Saturday' %}
+                        {% if class_info.time == hour %}
+                        <br>
+                            <div class="class-box 
+                                {% if class_info.subject == 'BC' %}bc
+                                {% elif class_info.subject == 'BC Essay' %}bc_essay
+                                {% elif class_info.subject == 'BI' %}bi
+                                {% elif class_info.subject == 'BI Extra' %}bi_extra
+                                {% elif class_info.subject == 'BM' %}bm
+                                {% elif class_info.subject == 'Geografi' %}geografi
+                                {% elif class_info.subject == 'Karangan' %}karangan
+                                {% elif class_info.subject == 'Math' %}math
+                                {% elif class_info.subject == 'Math Extra' %}math_extra
+                                {% elif class_info.subject == 'RBT' %}rbt
+                                {% elif class_info.subject == 'Science' %}science
+                                {% elif class_info.subject == 'Sejarah' %}sejarah
+                                {% else %}default
+                                {% endif %}">
+                                {{ class_info.class_name }}<br>
+                            </div>
+                            <div class="time">
+                                {{ class_info.start_time }} - {{ class_info.end_time}}<br>
+                            </div>
+                            <div class="tutor">
+                                {{ class_info.tutor }}<br>
+                            </div>
+                            
+                        {% elif class_info.start_time < hour and class_info.end_time > hour %}
+                        <br>
+                            <!-- Display the class in both hourly slots -->
+                            <div class="class-box 
+                                {% if class_info.subject == 'BC' %}bc
+                                {% elif class_info.subject == 'BC Essay' %}bc_essay
+                                {% elif class_info.subject == 'BI' %}bi
+                                {% elif class_info.subject == 'BI Extra' %}bi_extra
+                                {% elif class_info.subject == 'BM' %}bm
+                                {% elif class_info.subject == 'Geografi' %}geografi
+                                {% elif class_info.subject == 'Karangan' %}karangan
+                                {% elif class_info.subject == 'Math' %}math
+                                {% elif class_info.subject == 'Math Extra' %}math_extra
+                                {% elif class_info.subject == 'RBT' %}rbt
+                                {% elif class_info.subject == 'Science' %}science
+                                {% elif class_info.subject == 'Sejarah' %}sejarah
+                                {% else %}default
+                                {% endif %}">
+                                {{ class_info.class_name }}<br>
+                            </div>
+                            <div class="time">
+                                {{ class_info.start_time }} - {{ class_info.end_time}}<br>
+                            </div>
+                            <div class="tutor">
+                                {{ class_info.tutor }}<br>
+                            </div>
+                        {% endif %}
+        
+                    {% endif %}
+                {% endfor %}
+            </td>
+
+            <!--Sunday-->
+            <td>
+                {% for class_info in timetable_data %}
+                    {% if class_info.weekly_day == 'Sunday' %}
+                        {% if class_info.time == hour %}
+                        <br>
+                            <div class="class-box 
+                                {% if class_info.subject == 'BC' %}bc
+                                {% elif class_info.subject == 'BC Essay' %}bc_essay
+                                {% elif class_info.subject == 'BI' %}bi
+                                {% elif class_info.subject == 'BI Extra' %}bi_extra
+                                {% elif class_info.subject == 'BM' %}bm
+                                {% elif class_info.subject == 'Geografi' %}geografi
+                                {% elif class_info.subject == 'Karangan' %}karangan
+                                {% elif class_info.subject == 'Math' %}math
+                                {% elif class_info.subject == 'Math Extra' %}math_extra
+                                {% elif class_info.subject == 'RBT' %}rbt
+                                {% elif class_info.subject == 'Science' %}science
+                                {% elif class_info.subject == 'Sejarah' %}sejarah
+                                {% else %}default
+                                {% endif %}">
+                                {{ class_info.class_name }}<br>
+                            </div>
+                            <div class="time">
+                                {{ class_info.start_time }} - {{ class_info.end_time}}<br>
+                            </div>
+                            <div class="tutor">
+                                {{ class_info.tutor }}<br>
+                            </div>
+                            
+                        {% elif class_info.start_time < hour and class_info.end_time > hour %}
+                        <br>
+                            <!-- Display the class in both hourly slots -->
+                            <div class="class-box 
+                                {% if class_info.subject == 'BC' %}bc
+                                {% elif class_info.subject == 'BC Essay' %}bc_essay
+                                {% elif class_info.subject == 'BI' %}bi
+                                {% elif class_info.subject == 'BI Extra' %}bi_extra
+                                {% elif class_info.subject == 'BM' %}bm
+                                {% elif class_info.subject == 'Geografi' %}geografi
+                                {% elif class_info.subject == 'Karangan' %}karangan
+                                {% elif class_info.subject == 'Math' %}math
+                                {% elif class_info.subject == 'Math Extra' %}math_extra
+                                {% elif class_info.subject == 'RBT' %}rbt
+                                {% elif class_info.subject == 'Science' %}science
+                                {% elif class_info.subject == 'Sejarah' %}sejarah
+                                {% else %}default
+                                {% endif %}">
+                                {{ class_info.class_name }}<br>
+                            </div>
+                            <div class="time">
+                                {{ class_info.start_time }} - {{ class_info.end_time}}<br>
+                            </div>
+                            <div class="tutor">
+                                {{ class_info.tutor }}<br>
+                            </div>
+                        {% endif %}
+        
+                    {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+</body>
+</html>
+{% endblock %}

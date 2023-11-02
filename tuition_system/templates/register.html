@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+{% block content %}
+{% load static %}
+<html>
+    <head>
+    </head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+    <style>
+
+        .form-wrapper{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo{
+            margin-top: 20px;
+            margin-left: 60px;
+        }
+        
+        .container{
+            width: 70%;
+            background-color: #F7F7F7;
+            margin-top: 20px;
+            margin-left: 60px;
+            margin-right: 60px;
+            margin-bottom: 30px;
+            border-radius: 15px;
+        }
+            
+        .container .box{
+            border-radius: 5px;
+            background: #F7F7F7;
+            margin: 30px;
+            padding-top: 15px;
+            padding-left: 20px;
+            padding-right: 30px;
+            padding-bottom: 15px;
+        }
+
+        input[type=text], input[type=password],input[type=date], select,input[type=file]{
+            width: 100%;
+            height: 37px;
+            /*border-radius: 6px;
+            border: 2px solid #F0F0F0;*/
+        }
+
+        .password-input-container{
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-password-icon {
+            cursor: pointer;
+            color: #777;
+            margin-left: -30px;
+        }
+
+        input[type=checkbox]{
+            width: 5%;
+            height: 20px;
+            border-radius: 6px;
+            border: 2px solid #F0F0F0;
+            position: relative;
+            vertical-align: middle;
+        }
+
+        button[type=submit]{
+            width: 10%;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid #081163;
+            background-color: #081163;
+            color: white;
+            text-align: center;
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .submitbtn{
+            color: inherit;
+            color: white;
+            text-decoration: none;
+        }
+
+        .subject td {
+            padding: 40px;
+            text-align: center;
+            margin: 5px;
+        }
+        
+        .row{
+            display: flex;
+            flex-wrap: wrap;
+        }
+    </style>
+    <body>
+        <form method ="POST" enctype="multipart/form-data">
+            {% csrf_token %} <!--for security concerns: to prevent a CSRF Attack-->
+
+            <div class="logo">
+                <img src="{% static 'images/tuisys-logo.png' %}" width="200" height="50">
+            </div>
+
+            <div class="form-wrapper">
+                <br>
+                    <h3><center>Berry Online Tuition Registration Form <span id="current-year"></span></center></h3>
+
+                    <div class="container">
+                        <div class="box">  
+                            
+                            <div class="mb-3">
+                                <!--<div class="form-floating mb-3">
+                                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                                    <label for="floatingInput">Email address</label>
+                                  </div>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="fullname" name="fullname" autocomplete="off" required >
+                                    <label for="fullname">Full Name</label>
+                                </div>-->
+                                <label for="fullname" class="form-label" ><b>Full Name</b></label>
+                                <input type="text" class="form-control" id="fullname" name="fullname" autocomplete="off" required>    
+                                
+                                <br>
+                                <label for="email" class="form-label" ><b>Email</b></label>
+                                <input type="text" class="form-control" id="email" name="email" autocomplete="off" required>
+
+                                <br>
+                                <label for="password" class="form-label" ><b>Password</b></label>
+                                    <div class="password-input-container">
+                                        <input type="password" class="form-control" id="password" name="password" autocomplete="off" required>
+                                        <span onclick="togglePasswordVisibility('password','toggle_password')" class="toggle-password-icon"><i id="toggle_password" class="fas fa-eye-slash"></i></span>
+                                    </div>
+
+                                <br>
+                                <div class="school_level">
+                                    <label for="school_level" class="form-label"><b>Education Level</b></label><br>
+                                        <select id="school_level" name="school_level" class="form-control" required> <!--temp remove class=form-control because the design not what I want-->
+                                            <option value="" selected disabled hidden><i>Select Education Level</option>
+                                            <option value="kindergarten">Kindergarten</option>
+                                            <option value="primary">Primary</option>
+                                            <option value="secondary">Secondary</option>
+                                        </select><br>
+                                </div>
+
+                                <div id="primary_school_type" style="display: none;">
+                                    <label for="primary_school_type_select" class="form-label"><b>School Type</b></label><br>
+                                    <select id="primary_school_type_select" name="primary_school_type" class="form-control">
+                                        <option value="" selected disabled hidden>Select School Type</option>
+                                        <option value="sk">SK</option>
+                                        <option value="sjkc">SJKC</option>
+                                    </select><br>
+                                </div>
+   
+                                <div id="sk_level" style="display: none;">
+                                    <label for="sk_level_select" class="form-label"><b>SK Level</b></label><br>
+                                    <select id="sk_level_select" name="sk_level" class="form-control">
+                                        <option value="" selected disabled hidden>Select School Level</option>
+                                        <option value="standard1">Standard 1</option>
+                                        <option value="standard2">Standard 2</option>
+                                        <option value="standard3">Standard 3</option>
+                                        <option value="standard4">Standard 4</option>
+                                        <option value="standard5">Standard 5</option>
+                                        <option value="standard6">Standard 6</option>
+                                    </select><br>
+                                </div>
+
+                                <div id="sjkc_level" style="display: none;">
+                                    <label for="sjkc_level_select" class="form-label"><b>SJKC Level</b></label><br>
+                                    <select id="sjkc_level_select" name="sjkc_level" class="form-control">
+                                        <option value="" selected disabled hidden>Select School Level</option>
+                                        <option value="standard1">Standard 1</option>
+                                        <option value="standard2">Standard 2</option>
+                                        <option value="standard3">Standard 3</option>
+                                        <option value="standard4">Standard 4</option>
+                                        <option value="standard5">Standard 5</option>
+                                        <option value="standard6">Standard 6</option>
+                                    </select><br>
+                                </div>
+   
+                                <div id="secondary_level" style="display: none;">
+                                    <label for="secondary_level_select" class="form-label"><b>SMK / SMJK Level</b></label><br>
+                                    <select id="secondary_level_select" name="secondary_level" class="form-control">
+                                        <option value="" selected disabled hidden>Select School Level</option>
+                                        <option value="form1">Form 1</option>
+                                        <option value="form2">Form 2</option>
+                                        <option value="form3">Form 3</option>
+                                        <option value="form4">Form 4</option>
+                                        <option value="form5">Form 5</option>
+                                    </select><br>
+                                </div>
+   
+                                <div id="kindergarten_timetable" style="display: none;">
+                                    <img src="{% static 'images/kindergarten_timetable.png' %}" width="600" height="225"><br><br>
+                                    <div class="row">
+                                        {% for subject in kindergarten_subjects %}
+                                            <div class="col-md-4">
+                                                <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                                <select name="{{ subject }}" class="form-control">
+                                                    <option value="" disabled selected>Select Timeslot</option>
+                                                    <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                    {% for tuition_class in subjects %}
+                                                        {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Kindergarten" %}
+                                                            <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select><br>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <br>
+                                </div>
+   
+                                <div id="sk_std1_timetable" style="display: none;">
+                                    <img src="{% static 'images/primary_sk_std1_timetable.png' %}" width="600" height="225"><br><br>
+                                    <div class="row">
+                                        {% for subject in primary_subjects.sk.std1 %}
+                                            <div class="col-md-4">
+                                                <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                                <select name="{{ subject }}" class="form-control">
+                                                    <option value="" disabled selected>Select Timeslot</option>
+                                                    <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                    {% for tuition_class in subjects %}
+                                                        {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Primary sk std1" %}
+                                                            <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select><br>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <br>
+                                </div>
+   
+                                <div id="sk_std2_timetable" style="display: none;">
+                                    <div class="row">
+                                        {% for subject in primary_subjects.sk.std2 %}
+                                            <div class="col-md-4">
+                                                <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                                <select name="{{ subject }}" class="form-control">
+                                                    <option value="" disabled selected>Select Timeslot</option>
+                                                    <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                    {% for tuition_class in subjects %}
+                                                        {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Primary sk std2" %}
+                                                            <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select><br>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <br>
+                                </div>
+                                
+                                <div id="sk_std3_timetable" style="display: none;">
+                                    <div class="row">
+                                        {% for subject in primary_subjects.sk.std3 %}
+                                            <div class="col-md-4">
+                                                <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                                <select name="{{ subject }}" class="form-control">
+                                                    <option value="" disabled selected>Select Timeslot</option>
+                                                    <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                    {% for tuition_class in subjects %}
+                                                        {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Primary sk std3" %}
+                                                            <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select><br>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <br>
+                                </div>
+                                
+                                <div id="sk_std4_timetable" style="display: none;">
+                                    <div class="row">
+                                        {% for subject in primary_subjects.sk.std4 %}
+                                            <div class="col-md-4">
+                                                <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                                <select name="{{ subject }}" class="form-control">
+                                                    <option value="" disabled selected>Select Timeslot</option>
+                                                    <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                    {% for tuition_class in subjects %}
+                                                        {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Primary sk std4" %}
+                                                            <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select><br>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <br>
+                                </div>
+                                
+                                <div id="sk_std5_timetable" style="display: none;">
+                                    <div class="row">
+                                        {% for subject in primary_subjects.sk.std5 %}
+                                            <div class="col-md-4">
+                                                <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                                <select name="{{ subject }}" class="form-control">
+                                                    <option value="" disabled selected>Select Timeslot</option>
+                                                    <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                    {% for tuition_class in subjects %}
+                                                        {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Primary sk std5" %}
+                                                            <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select><br>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <br>
+                                </div>
+                                
+                                <div id="sk_std6_timetable" style="display: none;">
+                                    <div class="row">
+                                        {% for subject in primary_subjects.sk.std6 %}
+                                            <div class="col-md-4">
+                                                <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                                <select name="{{ subject }}" class="form-control">
+                                                    <option value="" disabled selected>Select Timeslot</option>
+                                                    <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                    {% for tuition_class in subjects %}
+                                                        {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Primary sk std6" %}
+                                                            <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select><br>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <br>
+                                </div>
+   
+                                <div id="sjkc_std1_timetable" style="display: none;">
+                                    <img src="{% static 'images/primary_sjkc_std1_timetable.png' %}" width="600" height="225"><br><br>
+                                    <div class="row">
+                                        {% for subject in primary_subjects.sjkc.std1 %}
+                                            <div class="col-md-4">
+                                                <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                                <select name="{{ subject }}" class="form-control">
+                                                    <option value="" disabled selected>Select Timeslot</option>
+                                                    <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                    {% for tuition_class in subjects %}
+                                                        {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Primary sjkc std1" %}
+                                                            <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select><br>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <br>
+                                </div>
+   
+                                <div id="sjkc_std2_timetable" style="display: none;">
+                                    <div class="row">
+                                        {% for subject in primary_subjects.sjkc.std2 %}
+                                            <div class="col-md-4">
+                                                <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                                <select name="{{ subject }}" class="form-control">
+                                                    <option value="" disabled selected>Select Timeslot</option>
+                                                    <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                    {% for tuition_class in subjects %}
+                                                        {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Primary sjkc std2" %}
+                                                            <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select><br>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <br>
+                                </div>
+                                
+                                <div id="sjkc_std3_timetable" style="display: none;">
+                                    <div class="row">
+                                        {% for subject in primary_subjects.sjkc.std3 %}
+                                            <div class="col-md-4">
+                                                <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                                <select name="{{ subject }}" class="form-control">
+                                                    <option value="" disabled selected>Select Timeslot</option>
+                                                    <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                    {% for tuition_class in subjects %}
+                                                        {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Primary sjkc std3" %}
+                                                            <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select><br>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <br>
+                                </div>
+                                
+                                <div id="sjkc_std4_timetable" style="display: none;">
+                                    <div class="row">
+                                        {% for subject in primary_subjects.sjkc.std4 %}
+                                            <div class="col-md-4">
+                                                <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                                <select name="{{ subject }}" class="form-control">
+                                                    <option value="" disabled selected>Select Timeslot</option>
+                                                    <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                    {% for tuition_class in subjects %}
+                                                        {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Primary sjkc std4" %}
+                                                            <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select><br>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <br>
+                                </div>
+                                
+                                <div id="sjkc_std5_timetable" style="display: none;">
+                                    <div class="row">
+                                        {% for subject in primary_subjects.sjkc.std5 %}
+                                            <div class="col-md-4">
+                                                <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                                <select name="{{ subject }}" class="form-control">
+                                                    <option value="" disabled selected>Select Timeslot</option>
+                                                    <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                    {% for tuition_class in subjects %}
+                                                        {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Primary sjkc std5" %}
+                                                            <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select><br>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <br>
+                                </div>
+                                
+                                <div id="sjkc_std6_timetable" style="display: none;">
+                                    <div class="row">
+                                        {% for subject in primary_subjects.sjkc.std6 %}
+                                            <div class="col-md-4">
+                                                <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                                <select name="{{ subject }}" class="form-control">
+                                                    <option value="" disabled selected>Select Timeslot</option>
+                                                    <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                    {% for tuition_class in subjects %}
+                                                        {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Primary sjkc std6" %}
+                                                            <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select><br>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <br>
+                                </div>
+
+                                <div id="form1_timetable" style="display: none;">
+                                    <img src="{% static 'images/secondary_form1_timetable.png' %}" width="500" height="900"><br><br>
+                                    <div class="row">
+                                        {% for subject in secondary_subjects.form1 %}
+                                        <div class="col-md-6">
+                                            <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                            <select name="{{ subject }}" class="form-control">
+                                                <option value="" disabled selected>Select Timeslot</option>
+                                                <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                {% for tuition_class in subjects %}
+                                                    {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Secondary form1" %}
+                                                        <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select><br>
+                                        </div>
+                                        {% endfor %}
+                                    </div><br>
+                                </div>
+  
+                                <div id="form2_timetable" style="display: none;">
+                                    <img src="{% static 'images/secondary_form2_timetable.png' %}" width="550" height="900"><br><br>
+                                    <div class="row">
+                                        {% for subject in secondary_subjects.form2 %}
+                                        <div class="col-md-4">
+                                            <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                            <select name="{{ subject }}" class="form-control" required>
+                                                <option value="" disabled selected>Select Timeslot</option>
+                                                <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                {% for tuition_class in subjects %}
+                                                    {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Secondary form2" %}
+                                                        <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select><br>
+                                        </div>
+                                        {% endfor %}
+                                    </div><br>
+                                </div>
+   
+                                <div id="form3_timetable" style="display: none;">
+                                    <div class="row">
+                                        {% for subject in secondary_subjects.form3 %}
+                                        <div class="col-md-6">
+                                            <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                            <select name="{{ subject }}" class="form-control">
+                                                <option value="" disabled selected>Select Timeslot</option>
+                                                <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                {% for tuition_class in subjects %}
+                                                    {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Secondary form3" %}
+                                                        <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select><br>
+                                        </div>
+                                        {% endfor %}
+                                    </div><br>
+                                </div>
+                                
+                                <div id="form4_timetable" style="display: none;">
+                                    <div class="row">
+                                        {% for subject in secondary_subjects.form4 %}
+                                        <div class="col-md-6">
+                                            <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                            <select name="{{ subject }}" class="form-control">
+                                                <option value="" disabled selected>Select Timeslot</option>
+                                                <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                {% for tuition_class in subjects %}
+                                                    {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Secondary form4" %}
+                                                        <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select><br>
+                                        </div>
+                                        {% endfor %}
+                                    </div><br>
+                                </div>
+                                    
+                                <div id="form5_timetable" style="display: none;">
+                                    <div class="row">
+                                        {% for subject in secondary_subjects.form5 %}
+                                        <div class="col-md-6">
+                                            <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                            <select name="{{ subject }}" class="form-control">
+                                                <option value="" disabled selected>Select Timeslot</option>
+                                                <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                {% for tuition_class in subjects %}
+                                                    {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Secondary form5" %}
+                                                        <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{ tuition_class.weekly_day }} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select><br>
+                                        </div>
+                                        {% endfor %}
+                                    </div><br>
+                                </div>
+
+                                <label for="school_name" class="form-label"><b>School (Full Name Of The School)</b></label>
+                                <input type="text" class="form-control" id="school_name" name="school_name" autocomplete="off" required>
+
+                                <br>
+                                <label for="startdate" class="form-label"><b>Start Date</b></label>
+                                <input type="date" class="form-control" id="startdate" name="startdate" required>
+
+                                <br>
+                                <label for="bankin_receipt" class="form-label"><b>Bank In Transfer Receipt</b></label>
+                                <input type="file" class="form-control" id="bankin_receipt" name="bankin_receipt" accept="image/*,.pdf" required onchange="validateFile('bankin_receipt','error_message');">
+                                <div id="error_message" style="color: red;"></div>
+
+                                <br>
+                                <label for="classin_phoneno" class="form-label"><b>Registered Classin Mobile Number</b></label>
+                                <input type="text" class="form-control" id="classin_phoneno" name="classin_phoneno" autocomplete="off" required>
+                                    
+                                <br>
+                                <label for="phoneNo" class="form-label"><b>Parent / Guardian Phone No. 1</b></label>
+                                <input type="text" class="form-control" id="phoneNo" name="phoneNo" autocomplete="off" required>
+                                
+                                
+                                    
+                                <br>
+                                <label for="parent_phoneno2" class="form-label"><b>Parent / Guardian Phone No. 2 (Optional)</b></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="parent_phoneno2_code" name="parent_phoneno2_code" autocomplete="off" placeholder="Code">
+                                    <div class="input-group-text mr-2"></div>
+                                    <input type="text" class="form-control" id="parent_phoneno2" name="parent_phoneno2" autocomplete="off" placeholder="No.">
+                                </div>
+
+                                <br>
+                                <label for="student_phoneno" class="form-label"><b>Student Phone No. (Optional)</b></label>
+                                <input type="text" class="form-control" id="student_phoneno" name="student_phoneno" autocomplete="off">
+                                
+                                <br>
+                                <label for="student_ic_number" class="form-label"><b>Student IC Number</b></label>
+                                <input type="text" class="form-control" id="student_ic_number" name="student_ic_number" autocomplete="off" required>
+                                    
+                                <br>
+                                <label for="student_ic_photo" class="form-label"><b>Student IC (Snap Front IC)</b></label>
+                                <input type="file" class="form-control" id="student_ic_photo" name="student_ic_photo" accept="image/*,.pdf" required onchange="validateFile('student_ic_photo','error_message_ic');">
+                                <div id="error_message_ic" style="color: red;"></div>
+                                    
+                                <br>
+                                <label for="student_photo" class="form-label"><b>Student Photo (Passport Size Photo)</b></label>
+                                <input type="file" class="form-control" id="student_photo" name="student_photo" accept="image/*,.pdf" required onchange="validateFile('student_photo','error_message_photo');">
+                                <div id="error_message_photo" style="color: red;"></div>                    
+                                    
+                                <br><br>
+                                <label for="studenthomeaddress" class="form-label"><b>Student Home Address</b></label>
+                                <br>
+                                <label for="street1" class="form-label"><b>Street 1</b></label>
+                                <input type="text" class="form-control" id="street1" name="street1" autocomplete="off" required>
+                                <br>
+                                <label for="street2" class="form-label"><b>Street 2</b></label>
+                                <input type="text" class="form-control" id="street2" name="street2" autocomplete="off" required>
+                                <br>
+                                <label for="city" class="form-label"><b>City</b></label>
+                                <input type="text" class="form-control" id="city" name="city" autocomplete="off" required>
+                                <br>
+                                <label for="postalcode" class="form-label"><b>Postal Code</b></label>
+                                <input type="text" class="form-control" id="postalcode" name="postalcode" autocomplete="off" required>
+                                <br>
+                                <label for="state" class="form-label"><b>&nbspState</b></label>
+                                <input type="text" class="form-control" id="state" name="state" autocomplete="off" required>
+                                <br>
+                                <br>
+                                
+                                <label for="know_us_from" class="form-label"><b>From where you know us?</b></label>
+                                <br>
+                                <input type="checkbox" id="facebook" name="facebook"> <!--removed class="form-control"-->
+                                <label for="facebook" class="form-label">Facebook</label>
+                                <br>
+                                <input type="checkbox"  id="instagram" name="instagram">
+                                <label for="instagram" class="form-label">Instagram</label>
+                                <br>
+                                <input type="checkbox" id="google" name="google">
+                                <label for="google" class="form-label">Google</label>
+                                <br>
+                                <input type="checkbox" id="tiktok" name="tiktok">
+                                <label for="tiktok" class="form-label">Tik Tok</label>
+                                <br>
+                                <input type="checkbox"  id="friend" name="friend">
+                                <label for="friend" class="form-label">Friend</label>
+                                <br>
+                                <input type="checkbox"  id="xhs" name="xhs">
+                                <label for="xhs" class="form-label">小红书</label>
+                                <br>
+                                <input type="checkbox"  id="sibling" name="sibling">
+                                <label for="sibling" class="form-label">Sibling or Family Member</label>
+                                <br>
+                                <input type="checkbox" id="other" name="other" onclick="isChecked()">
+                                <label for="other" class="form-label">Other</label>
+                                <p id="displayOther" style="display:none"><input type="text" class="form-control" id="displayOther1" name="displayOther" placeholder="Please type here"><br></p>
+                                
+
+                                <div class="mb-3">
+                                    <br>
+                                    <input type="checkbox" id="temrs" name="terms_and_conditions" required>
+                                    <label for="terms" class="form-label">I agree to <a href="https://www.berrygoodtuitioncentre.com/terms-and-conditions" target="_blank">terms & conditions.</a></label>
+                                </div>
+    
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type ="submit">Submit</a></button>
+                    <br>
+            </div>
+
+        </form>
+    </body>
+    
+    <script>
+        // Get the current year
+        var currentYear = new Date().getFullYear();
+
+        // Find the element with the id "current-year" and set its text content to the current year
+        document.getElementById("current-year").textContent = currentYear;
+
+        function isChecked() {
+            var checkBox = document.getElementById("other");
+            var text = document.getElementById("displayOther");
+            
+            if (checkBox.checked == true){
+                text.style.display = "block";
+            } else {
+                text.style.display = "none";
+            }
+        }
+
+        const educationLevelSelect = document.getElementById('school_level');
+        const schoolTypeDiv = document.getElementById('primary_school_type');
+        const schoolTypeSelect = document.getElementById('primary_school_type_select');
+        const skLevelDiv = document.getElementById('sk_level');
+        const skLevelSelect = document.getElementById('sk_level_select');
+        const sjkcLevelDiv = document.getElementById('sjkc_level');
+        const sjkcLevelSelect = document.getElementById('sjkc_level_select');
+        const secondaryLevelDiv = document.getElementById('secondary_level');
+        const secondaryLevelSelect = document.getElementById('secondary_level_select');
+        const kindergartenTimetable = document.getElementById('kindergarten_timetable');
+        const skStd1Timetable = document.getElementById('sk_std1_timetable');
+        const skStd2Timetable = document.getElementById('sk_std2_timetable');
+        const skStd3Timetable = document.getElementById('sk_std3_timetable');
+        const skStd4Timetable = document.getElementById('sk_std4_timetable');
+        const skStd5Timetable = document.getElementById('sk_std5_timetable');
+        const skStd6Timetable = document.getElementById('sk_std6_timetable');
+        const sjkcStd1Timetable = document.getElementById('sjkc_std1_timetable');
+        const sjkcStd2Timetable = document.getElementById('sjkc_std2_timetable');
+        const sjkcStd3Timetable = document.getElementById('sjkc_std3_timetable');
+        const sjkcStd4Timetable = document.getElementById('sjkc_std4_timetable');
+        const sjkcStd5Timetable = document.getElementById('sjkc_std5_timetable');
+        const sjkcStd6Timetable = document.getElementById('sjkc_std6_timetable');
+        const form1Timetable = document.getElementById('form1_timetable');
+        const form2Timetable = document.getElementById('form2_timetable');
+        const form3Timetable = document.getElementById('form3_timetable');
+        const form4Timetable = document.getElementById('form4_timetable');
+        const form5Timetable = document.getElementById('form5_timetable');
+        const form6Timetable = document.getElementById('form6_timetable');
+        
+        educationLevelSelect.addEventListener('change', () => {
+            if (educationLevelSelect.value === 'kindergarten'){
+                
+                schoolTypeDiv.style.display = 'none';
+                skLevelDiv.style.display = 'none';
+                sjkcLevelDiv.style.display= 'none';
+                secondaryLevelDiv.style.display = 'none';
+                kindergartenTimetable.style.display = 'block';
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            }
+            else if (educationLevelSelect.value === 'primary') {
+                schoolTypeDiv.style.display = 'block';
+                skLevelDiv.style.display = 'none';
+                sjkcLevelDiv.style.display= 'none';
+                secondaryLevelDiv.style.display = 'none';
+                kindergartenTimetable.style.display = 'none';
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            } 
+            else if (educationLevelSelect.value === 'secondary'){
+                schoolTypeDiv.style.display = 'none';
+                skLevelDiv.style.display = 'none';
+                sjkcLevelDiv.style.display= 'none';
+                secondaryLevelDiv.style.display = 'block';
+                kindergartenTimetable.style.display = 'none';
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            }else{
+                schoolTypeDiv.style.display = 'none';
+                skLevelDiv.style.display = 'none';
+                sjkcLevelDiv.style.display= 'none';
+                secondaryLevelDiv.style.display = 'none';
+                kindergartenTimetable.style.display = 'none';
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            }
+        });
+        
+        schoolTypeSelect.addEventListener('change', () => {
+            if (schoolTypeSelect.value === 'sk') {
+                skLevelDiv.style.display = 'block';
+                sjkcLevelDiv.style.display = 'none';
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            } 
+            else if (schoolTypeSelect.value === 'sjkc'){
+                sjkcLevelDiv.style.display = 'block';
+                skLevelDiv.style.display = 'none';
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            }
+        });
+        
+        skLevelSelect.addEventListener('change', () => {
+            if (skLevelSelect.value === 'standard1'){
+                skStd1Timetable.style.display='block';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+            } 
+            else if (skLevelSelect.value === 'standard2'){
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='block';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+            } 
+            else if (skLevelSelect.value === 'standard3'){
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='block';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+            } 
+            else if (skLevelSelect.value === 'standard4'){
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='block';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+            } 
+            else if (skLevelSelect.value === 'standard5'){
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='block';
+                skStd6Timetable.style.display='none';
+            } 
+            else if (skLevelSelect.value === 'standard6'){
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='block';
+            }
+            else{
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+            }
+        })
+        
+        sjkcLevelSelect.addEventListener('change', () =>{
+            if (sjkcLevelSelect.value === 'standard1'){
+                sjkcStd1Timetable.style.display='block';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            } else if (sjkcLevelSelect.value === 'standard2'){
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='block';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            } 
+            else if (sjkcLevelSelect.value === 'standard3'){
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='block';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            } 
+            else if (sjkcLevelSelect.value === 'standard4'){
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='block';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            } 
+            else if (sjkcLevelSelect.value === 'standard5'){
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='block';
+                sjkcStd6Timetable.style.display='none';
+            } 
+            else if (sjkcLevelSelect.value === 'standard6'){
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='block';
+            }
+            else{
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            }
+        })
+        
+        secondaryLevelSelect.addEventListener('change', () =>{
+            if (secondaryLevelSelect.value === 'form1'){
+                form1Timetable.style.display='block';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            } 
+            else if (secondaryLevelSelect.value === 'form2'){
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='block';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            } 
+            else if (secondaryLevelSelect.value === 'form3'){
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='block';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            }
+            else if (secondaryLevelSelect.value === 'form4'){
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='block';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            } 
+            else if (secondaryLevelSelect.value === 'form5'){
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='block';
+                form6Timetable.style.display='none';
+            } 
+            else if (secondaryLevelSelect.value === 'form6'){
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='block';
+            }
+            else{
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            }
+            })
+
+
+            function togglePasswordVisibility(inputId, iconId) {
+                var input = document.getElementById(inputId);
+                var icon = document.getElementById(iconId);
+                
+                if (input.type === "password") {
+                    input.type = "text";
+                    icon.classList.remove("fa-eye-slash");
+                    icon.classList.add("fa-eye");
+                } else {
+                    input.type = "password";
+                    icon.classList.remove("fa-eye");
+                    icon.classList.add("fa-eye-slash");
+                }
+            }
+
+            function validateFile(inputId, errorMessageId) {
+                var fileInput = document.getElementById(inputId);
+                var allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf']; // Allowed file extensions
+                
+                var fileName = fileInput.value;
+                var fileExtension = fileName.split('.').pop().toLowerCase();
+                
+                if (allowedExtensions.indexOf(fileExtension) === -1) {
+                    document.getElementById(errorMessageId).innerText = 'Invalid file type. Please upload a valid image or PDF file.';
+                    fileInput.value = ''; // Clear the file input
+                    return false;
+                }
+                
+                document.getElementById(errorMessageId).innerText = ''; // Clear the error message
+                return true;
+            }
+
+            function clearErrorMessage(){
+                document.getElementById(errorMessageId).innerText = '';
+            } 
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+
+</html>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "sidebar_student.html" %}
+
+{% block content %} 
+<html>
+<head>
+    
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #EFEFEF;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .contact-info {
+            margin-bottom: 20px;
+        }
+
+        .whatsapp-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #25D366;
+            color: #FFF;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+        }
+
+        .whatsapp-container:hover {
+            background-color: #128C7E;
+        }
+
+        .whatsapp-container i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .whatsapp-container span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <br>
+    <h5><center><b>Enquiry</b></center></h5>
+    <div class="container">
+        
+        <div class="contact-info">
+            <h6>For any issues, kindly contact us at</h6>
+            <h6><b><i>Phone No. : 016-4124767</i></b></h6>
+        </div>
+
+        <a href="https://api.whatsapp.com/send?phone=+60164024636&text=Hello" target="_blank" rel="noopener" style="text-decoration: none;">
+            <div class="whatsapp-container">
+                <i class="fab fa-whatsapp"></i>
+                <span>Contact Us</span>
+            </div>
+        </a>
+    </div>
+</body>
+</html>
+
+{% endblock %}

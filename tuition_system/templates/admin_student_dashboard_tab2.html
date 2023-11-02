@@ -1,0 +1,203 @@
+<html>
+    <style>
+        .table{
+            width: 100%;
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+        }
+
+        th{
+            cursor: pointer;
+        }
+
+        .table th,
+        .table td{
+            padding: 8px;
+        }
+
+        .table th{
+            background-color: #21486c;
+            color: #ffffff;
+        }
+
+        .user_fullname{
+            color: #333;
+        }
+
+        .user_fullname a{
+            color: #6a76ff;
+            text-decoration: none;
+        }
+
+        .user_fullname a:hover{
+            color: #1650e1;
+        }
+
+        .header-wrapper{
+            display: flex;
+            align-items: center;
+        }
+
+        .header-wrapper span{
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-wrapper i{
+            margin-left: 4px;
+        }
+
+        .view-button{
+            background-color: #7ea8eb !important; 
+            border: #7ea8eb !important;
+            color: white !important;
+           
+        }
+
+        .view-button:hover{
+            background-color: #6e94d1 !important;
+            color: white !important; 
+        }
+    </style>
+
+    <body>
+        <div classs="container">
+            <br>
+            <table id="student_table" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            <span>No.</span>
+                        </th>
+                        <th onclick="sortTable(1)">
+                            <div class="header-wrapper">
+                                <span>
+                                    Name
+                                    <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                </span>
+                            </div>
+                        </th>
+                        <th onclick="sortTable(2)">
+                            <div class="header-wrapper">
+                                <span>
+                                    Email
+                                    <i class="fas fa-sort"  style="margin-left: 10px;"></i>
+                                </span>
+                            </div>
+                        </th>
+                        <th>
+                            <span>Phone No.</span>
+                        </th>
+                        <th onclick="sortTable(4)">
+                            <div class="header-wrapper">
+                                <span>
+                                    School Name
+                                    <i class="fas fa-sort"  style="margin-left: 10px;"></i>
+                                </span>
+                            </div>
+                        </th>
+                        <th>
+                            <span>Action</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr class="student_rows">
+                        <td>{{ students.start_index|add:forloop.counter0 }}</td>
+                        <td class="user_fullname"><a href="{% url 'admin_individual_student_dashboard' student.id%}">{{ student.user.full_name}}</a></td>
+                        <td>{{ student.user.email }}</td>
+                        <td>{{ student.user.phone_no }}</td>
+                        <td>{{ student.school_name}}</td>
+                        <td class="action-buttons">
+                            <a href="{% url 'admin_individual_student_dashboard' pk=student.id %}" class="btn btn-primary view-button"><i class="fas fa-eye"></i></a>
+                            </td>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        <!--Paginator-->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+                {% if students.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1&active_tab=tab2">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ students.previous_page_number }}&active_tab=tab2">Previous</a>
+                </li>
+                {% endif %}
+
+                {% for i in page_range %}
+                    {% if i == students.number %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ i }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}&active_tab=tab2">{{ i }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if students.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ students.next_page_number }}&active_tab=tab2">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ students.paginator.num_pages }}&active_tab=tab2">Last</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </body>
+    <script>
+        function sortTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("student_table");
+            switching = true;
+            dir = "asc";
+            
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("td")[n].textContent;
+                    y = rows[i + 1].getElementsByTagName("td")[n].textContent;
+                    
+                    var compareResult = x.localeCompare(y, undefined, { sensitivity: 'base' });
+                    
+                    if (dir == "asc") {
+                        if (compareResult > 0) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (compareResult < 0) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+    </script>
+</html>

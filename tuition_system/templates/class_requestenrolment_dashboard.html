@@ -1,0 +1,68 @@
+{% extends "sidebar_student.html" %}
+{% block content %} 
+<html>
+    <head>
+        <style>
+
+            table{
+                border-collapse: collapse;
+                border-spacing: 0;
+                width: 100%;
+                border: 1px solid #ddd;
+            }
+
+            th,td{
+                text-align: left;
+                padding: 16px;
+            }
+
+            button[type=submit]{
+                margin-left: 1100px;
+                width: 10%;
+                height: 30px;
+                background-color: #1E78FF;
+                border: #1E78FF;
+                border-radius: 4px;
+                color: white;
+            
+            }
+
+            .addsubjectbtn{
+                color: inherit;
+                color: white;
+                text-decoration: none;
+            }
+
+
+        </style>
+        <body>
+        <br>
+        <h3>Enrol Requests</h3>
+        <button type="submit"><a href="{% url 'addsubject' %}" class="addsubjectbtn">Add Subject</a></button>
+        <br><br>
+
+            <table>
+                <tr>
+                    <th>No.</th>
+                    <th>Class Enrol</th>
+                    <th>Subject</th>
+                    <th>Class Time</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>1.</td>
+                    <td>F1 English</td>
+                    <td>English</td>
+                    <td>8am - 9am</td>
+                    <td>Pending</td>
+                </tr>
+
+            </table>
+      
+
+            </div>
+        </body>
+    </head>
+</html>
+
+{% endblock %}

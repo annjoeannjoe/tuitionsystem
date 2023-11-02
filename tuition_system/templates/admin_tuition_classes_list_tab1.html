@@ -1,0 +1,395 @@
+<html>
+    <style>
+        .addclassbtn{
+            color: white;
+            text-decoration: none;
+        }
+
+        button[type=button]:hover .addclassbtn{
+            color: white;
+        }
+
+        .add-class-container{
+            text-align: right;
+        }
+
+        .archive-button{
+            background-color: #b5b5b5 !important;
+            border: #b5b5b5 !important;
+            color: white !important;
+        }
+
+        .archive-button:hover{
+            background-color: #696969 !important;
+            color: white !important;
+        }
+
+        .table{
+            width: 100%;
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+        }
+
+        th{
+            cursor: pointer;
+        }
+
+        .table th,
+        .table td{
+            padding: 8px;
+        }
+
+        .table th {
+            background-color: #21486c;
+            color: #ffffff;
+        }
+
+        .header-wrapper{
+            display: flex;
+            align-items: center;
+        }
+
+        .header-wrapper span{
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-wrapper i{
+            margin-left: 4px;
+        }
+        
+        .edit-button{
+            background-color: #00bec1 !important;
+            border: #00bec1 !important;
+        }
+
+        .edit-button:hover{
+            background-color: #009496;
+        }
+
+        .tuition_class_name{
+            color: #333;
+        }
+
+        .tuition_class_name a{
+            color: #6A76FF;
+            text-decoration: none;
+        }
+
+        .tuition_class_name a:hover{
+            color: #1650E1;
+        }
+
+    </style>
+
+    <body>
+        <div class="tab1-content-container">
+            <br>
+            <div class="add-class-container">
+                <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addClassModal">
+                    <a href="#" class="addclassbtn">Add Class</a>
+                </button>
+            </div>
+            
+            <br>
+            <table id="active_classes_table" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            <span>No.</span>
+                        </th>
+                        <th onclick="sortTableTab1(1)">
+                            <div class="header-wrapper">
+                                <span>
+                                    Class Name
+                                    <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                </span>
+                            </div>
+                        </th>
+                        <th onclick="sortTableTab1(2)">
+                            <div class="header-wrapper">
+                                <span>
+                                    Subject Taught
+                                    <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                </span>
+                            </div>
+                        </th>
+                        <th onclick="sortTableTab1(3)">
+                            <div class="header-wrapper">
+                                <span>
+                                    Study Level
+                                    <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                </span>
+                            </div>
+                        </th>
+                        <th>
+                            <span>Class Time</span>
+                        </th>
+                        <th onclick="sortTableTab1(5)">
+                            <div class="header-wrapper">
+                                <span>
+                                    Created At
+                                    <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                </span>
+                            </div>
+                        </th>
+                        <th>
+                            <span>Action</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for classes in tuition_classes %}
+                    <tr>
+                        <td>{{ tuition_classes.start_index|add:forloop.counter0 }}</td>
+                        <td class="tuition_class_name"><a href="{% url 'admin_view_class_detail' classes.id%}">{{ classes.tuition_class_name }}</a></td>
+                        <td>{{ classes.subject }}</td>
+                        <td>{{ classes.tuition_class_study_level}}</td>
+                        <td>Every {{ classes.weekly_day}}
+                            <h6><span style="font-size: smaller;">{{ classes.general_start_time }} to {{ classes.general_end_time }}</span></h6>
+                        </td>
+                        <td>{{ classes.created_at|date:"Y-m-d H:i:s" }}</td>
+                        <td class="action-buttons">
+                            <a href="{% url 'admin_edit_class_detail' pk=classes.id %}" class="btn btn-primary edit-button"><i class="fas fa-edit"></i></a>
+                            <span style="margin-right: 10px;"></span>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ classes.id }}"><i class="fas fa-trash"></i></button>
+                            <span style="margin-right: 10px;"></span>  
+                            <button type="button" class="btn btn-info archive-button" data-bs-toggle="modal" data-bs-target="#archiveModal{{ classes.id }}"><i class="fas fa-archive"></i></button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!--Boostrap Pagination Component-->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+                {% if tuition_classes.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ tuition_classes.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+        
+                {% for i in page_range %}
+                    {% if i == tuition_classes.number %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ i }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+        
+                {% if tuition_classes.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ tuition_classes.next_page_number }}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ tuition_classes.paginator.num_pages }}">Last</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        <!--Add Class Modal-->
+        <div class="modal fade" id="addClassModal" tabindex="-1" aria-label="addClassModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg"> <!--modal-lg is added to enlarge the modal box-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addClassModalLabel"><b>Add Class</b></h5>
+                        <button type ="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="classForm" method="POST" action="{% url 'admin_add_class' %}">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <h6><b>Class Name</b></h6>
+                            <input type="text" class="form-control" id="class_name" name="class_name" autocomplete="off" required>
+                            <span style="font-size: smaller;"><i>Example: Class Name_Tutor Name_Study Level</i></span>
+
+                            <br>
+                            <br>
+                            <h6><b>Subject</b></h6>
+                            <select id="subject" class="form-control" id="subject" name="subject">
+                                <option value="" disabled selected>Select Subject</option>
+                                <option value="BC">BC</option>
+                                <option value="BC Essay">BC Essay</option>
+                                <option value="BI">BI</option>
+                                <option value="BI Extra">BI Extra</option>
+                                <option value="BM">BM</option>
+                                <option value="Geografi">Geografi</option>
+                                <option value="Karangan">Karangan</option>
+                                <option value="Math">Math</option>
+                                <option value="Math Extra">Math Extra</option>
+                                <option value="RBT">RBT</option>
+                                <option value="Science">Science</option>
+                                <option value="Sejarah">Sejarah</option>
+                            </select>
+
+                            <br>
+                            <h6><b>Tutor</b></h6>
+                            <input type="text" class="form-control" id="tutor_name" name="tutor_name" autocomplete="off" required>
+
+                            <br>
+                            <h6><b>Study Level</b></h6>
+                            <select id="study_level" class="form-control" id="study_level" name="study_level">
+                                <option value="" disabled selected>Select Study Level</option>
+                                <option value="Kindergarten">Kindergarten</option>
+                                <option value="Primary sk std1">Primary SK Standard 1</option>
+                                <option value="Primary sk std2">Primary SK Standard 2</option>
+                                <option value="Primary sk std3">Primary SK Standard 3</option>
+                                <option value="Primary sk std4">Primary SK Standard 4</option>
+                                <option value="Primary sk std5">Primary SK Standard 5</option>
+                                <option value="Primary sk std6">Primary SK Standard 6</option>
+                                <option value="Primary sjkc std1">Primary SJKC Standard 1</option>
+                                <option value="Primary sjkc std2">Primary SJKC Standard 2</option>
+                                <option value="Primary sjkc std3">Primary SJKC Standard 3</option>
+                                <option value="Primary sjkc std4">Primary SJKC Standard 4</option>
+                                <option value="Primary sjkc std5">Primary SJKC Standard 5</option>
+                                <option value="Primary sjkc std6">Primary SJKC Standard 6</option>
+                                <option value="Secondary form1">Secondary Form 1</option>
+                                <option value="Secondary form2">Secondary Form 2</option>
+                                <option value="Secondary form3">Secondary Form 3</option>
+                                <option value="Secondary form4">Secondary Form 4</option>
+                                <option value="Secondary form5">Secondary Form 5</option>
+                            </select>
+
+                            <br>
+                            <h6><b>Monthly Fee</b></h6>
+                            <input type="text" class="form-control" id="monthly_fee" name="monthly_fee" autocomplete="off" required>
+
+                            <br>
+                            <h6><b>Weekly Day</b></h6>
+                            <select id="weekly_day" name="weekly_day" class="form-control" reuired>
+                                <option value="" disabled selected>Select Weekly Day</option>
+                                <option value="Monday">Monday</option>
+                                <option value="Tuesday">Tuesday</option>
+                                <option value="Wednesday">Wednesday</option>
+                                <option value="Thursday">Thursday</option>
+                                <option value="Friday">Friday</option>
+                                <option value="Saturday">Saturday</option>
+                                <option value="Sunday">Sunday</option>
+                            </select>
+
+                            <br>
+                            <h6><b>Start Time</b></h6>
+                            <input type="time" class="form-control" id="start_time" name="start_time" required>
+
+                            <br>
+                            <h6><b>End Time</b></h6>
+                            <input type="time" class="form-control" id="end_time" name="end_time">
+
+                            <br>
+                            <h6><b>Start Date</b></h6>
+                            <input type="date" class="form-control" id="start_date" name="start_date">
+
+                            <br>
+                            <h6><b>End Date</b></h6>
+                            <input type="date" class="form-control" id="end_date" name="end_date">
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!--Delete Class Modal-->
+        {% for classes in tuition_classes %}
+        <div class="modal fade" id="deleteModal{{ classes.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><b>Delete Class</b></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure want to delete the class with the name "{{ classes.tuition_class_name }}"?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <a href="{% url 'admin_delete_tuition_class' classes.id %}" class="btn btn-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!--Archive Class Modal-->
+        {% for classes in tuition_classes %}
+        <div class="modal fade" id="archiveModal{{ classes.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><b>Archive Class</b></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure want to archive the class with the name "{{ classes.tuition_class_name }}"?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <a href="{% url 'admin_archive_class' classes.id %}" class="btn btn-primary">Archive</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </body>
+    
+    <script>
+        function sortTableTab1(n) {
+          var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+          table = document.getElementById("active_classes_table");
+          switching = true;
+          dir = "asc";
+          
+          while (switching) {
+            switching = false;
+            rows = table.rows;
+            
+            for (i = 1; i < (rows.length - 1); i++) {
+              shouldSwitch = false;
+              x = rows[i].getElementsByTagName("td")[n].textContent.toLowerCase();
+              y = rows[i + 1].getElementsByTagName("td")[n].textContent.toLowerCase();
+              
+              if (dir == "asc") {
+                if (x > y) {
+                  shouldSwitch = true;
+                  break;
+                }
+              } else if (dir == "desc") {
+                if (x < y) {
+                  shouldSwitch = true;
+                  break;
+                }
+              }
+            }
+            
+            if (shouldSwitch) {
+              rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+              switching = true;
+              switchcount++;
+            } else {
+              if (switchcount === 0 && dir === "asc") {
+                dir = "desc";
+                switching = true;
+              }
+            }
+          }
+        }
+      </script>
+      
+      
+    
+</html>

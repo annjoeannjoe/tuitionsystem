@@ -1,0 +1,849 @@
+{% extends 'sidebar_admin.html' %}
+{% load static %}
+{% block content %}
+
+<html>
+    <head>
+    </head>
+
+    <style>
+        .tab-pane{
+            background-color: #FFFFFF;
+        }
+
+        .content-container{
+            background-color: #F8F8F8;
+            padding: 15px 5%;
+            padding-top: 10px;
+            padding-bottom: 20px;
+            border-radius: 10px;
+            margin: 0 auto;
+        }
+
+        .containerbutton{
+            background-color: #FFFFFF;
+            padding: 15px 5%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; /* Push both buttons to the right side of the container */
+        }
+
+        .btn-primary{
+            width: 80px;
+            height: 35px;
+            font-size: 15px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-secondary{
+            width: 80px;
+            height: 35px;
+            font-size: 15px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .form-control:focus{
+            outline: none;
+            border-color: #1E78FF;
+            box-shadow: 0 0 3px #1E78FF;
+        }
+
+        .password-input-container{
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .toggle-password-icon {
+            cursor: pointer;
+            color: #777;
+            margin-left: -30px;
+        }
+    </style>
+    
+    <body>
+        <br>
+        <h5><center><b>New Student Profile</b></center></h5>
+
+        <div class="container mt-5">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab1">Student's Details</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab2">Enrolment's Detais</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="tab1" class="tab-pane fade show active">
+                    <br>
+                    <form method="POST" id="saveForm"action="{% url 'addnewadmin' %}">
+                        {% csrf_token%}
+                        
+                        <div class="content-container">
+                            <br>
+                            <label for="fullname" class="form-label"><b>&nbspFull Name</b></label><br>
+                            <input type="text" class="form-control" id="fullname" name="fullname" required autocomplete="off">
+                        
+                            <br>
+                            <label for="email" class="form-label"><b>&nbspEmail</b></label>
+                            <input type="email" class="form-control" id="email" name="email" required autocomplete="off">
+                        
+                            <br>
+                            <label for="date" class="form-label"><b>&nbspPassword</b></label><br>
+                            <div class="password-input-container">
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <span onclick="togglePasswordVisibility('password','toggle_password')" class="toggle-password-icon"><i id="toggle_password" class="fas fa-eye-slash"></i></span>
+                            </div>
+        
+                            <br>
+                            <div class="school_level">
+                                <label for="school_level" class="form-label"><b>Education Level</b></label><br>
+                                    <select id="school_level" name="school_level" class="form-control" required> <!--temp remove class=form-control because the design not what I want-->
+                                        <option value="" selected disabled hidden><i>Select Education Level</option>
+                                        <option value="kindergarten">Kindergarten</option>
+                                        <option value="primary">Primary</option>
+                                        <option value="secondary">Secondary</option>
+                                    </select><br>
+                            </div>
+        
+                            <div id="primary_school_type" style="display: none;">
+                                <label for="primary_school_type_select" class="form-label"><b>School Type</b></label><br>
+                                <select id="primary_school_type_select" name="primary_school_type" class="form-control">
+                                    <option value="" selected disabled hidden>Select School Type</option>
+                                    <option value="sk">SK</option>
+                                    <option value="sjkc">SJKC</option>
+                                </select><br>
+                            </div>
+
+                            <div id="sk_level" style="display: none;">
+                                <label for="sk_level_select" class="form-label"><b>SK Level</b></label><br>
+                                <select id="sk_level_select" name="sk_level" class="form-control">
+                                    <option value="" selected disabled hidden>Select School Level</option>
+                                    <option value="standard1">Standard 1</option>
+                                    <option value="standard2">Standard 2</option>
+                                    <option value="standard3">Standard 3</option>
+                                    <option value="standard4">Standard 4</option>
+                                    <option value="standard5">Standard 5</option>
+                                    <option value="standard6">Standard 6</option>
+                                </select><br>
+                            </div>
+        
+                            <div id="sjkc_level" style="display: none;">
+                                <label for="sjkc_level_select" class="form-label"><b>SJKC Level</b></label><br>
+                                <select id="sjkc_level_select" name="sjkc_level" class="form-control">
+                                    <option value="" selected disabled hidden>Select School Level</option>
+                                    <option value="standard1">Standard 1</option>
+                                    <option value="standard2">Standard 2</option>
+                                    <option value="standard3">Standard 3</option>
+                                    <option value="standard4">Standard 4</option>
+                                    <option value="standard5">Standard 5</option>
+                                    <option value="standard6">Standard 6</option>
+                                </select><br>
+                            </div>
+        
+                            <div id="secondary_level" style="display: none;">
+                                <label for="secondary_level_select" class="form-label"><b>SMK / SMJK Level</b></label><br>
+                                <select id="secondary_level_select" name="secondary_level" class="form-control">
+                                    <option value="" selected disabled hidden>Select School Level</option>
+                                    <option value="form1">Form 1</option>
+                                    <option value="form2">Form 2</option>
+                                    <option value="form3">Form 3</option>
+                                    <option value="form4">Form 4</option>
+                                    <option value="form5">Form 5</option>
+                                </select><br>
+                            </div>
+        
+                            <div id="kindergarten_timetable" style="display: none;">
+                                <img src="{% static 'images/kindergarten_timetable.png' %}" width="600" height="225"><br><br>
+                                <div class="row">
+                                    {% for subject in kindergarten_subjects %}
+                                        <div class="col-md-4">
+                                            <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                            <select name="{{ subject }}" class="form-control">
+                                                <option value="" disabled selected>Select Timeslot</option>
+                                                <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                {% for tuition_class in subjects %}
+                                                    {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Kindergarten" %}
+                                                        <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{tuition_class.weekly_day}} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select><br>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <br>
+                            </div>
+
+                            <div id="sk_std1_timetable" style="display: none;">
+                                <img src="{% static 'images/primary_sk_std1_timetable.png' %}" width="600" height="225"><br><br>
+                                <div class="row">
+                                    {% for subject in primary_subjects.sk.std1 %}
+                                        <div class="col-md-4">
+                                            <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                            <select name="{{ subject }}" class="form-control">
+                                                <option value="" disabled selected>Select Timeslot</option>
+                                                <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                {% for tuition_class in subjects %}
+                                                    {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Primary sk std1" %}
+                                                        <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{tuition_class.weekly_day}} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select><br>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <br>
+                            </div>
+        
+                            <div id="sk_std2_timetable" style="display: none;">
+                                <label for="sk_std2_timetable_display" class="form-label">Timetable</label>
+                                <h3>SK STD2 Timetable</h3>
+                            </div>
+                            
+                            <div id="sk_std3_timetable" style="display: none;">
+                                <label for="sk_std3_timetable_display" class="form-label">Timetable</label>
+                                <h3>SK STD3 Timetable</h3>
+                            </div>
+                            
+                            <div id="sk_std4_timetable" style="display: none;">
+                                <label for="sk_std4_timetable_display" class="form-label">Timetable</label>
+                                <h3>SK STD4 Timetable</h3>
+                            </div>
+                            
+                            <div id="sk_std5_timetable" style="display: none;">
+                                <label for="sk_std5_timetable_display" class="form-label">Timetable</label>
+                                <h3>SK STD5 Timetable</h3>
+                            </div>
+                            
+                            <div id="sk_std6_timetable" style="display: none;">
+                                <label for="sk_std6_timetable_display" class="form-label">Timetable</label>
+                                <h3>SK STD6 Timetable</h3>
+                            </div>
+        
+                            <div id="sjkc_std1_timetable" style="display: none;">
+                                <img src="{% static 'images/primary_sjkc_std1_timetable.png' %}" width="600" height="225"><br><br>
+                                <div class="row">
+                                    {% for subject in primary_subjects.sjkc.std1 %}
+                                        <div class="col-md-4">
+                                            <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                            <select name="{{ subject }}" class="form-control">
+                                                <option value="" disabled selected>Select Timeslot</option>
+                                                <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                {% for tuition_class in subjects %}
+                                                    {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Primary sjkc std1" %}
+                                                        <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{tuition_class.weekly_day}} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select><br>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <br>
+                            </div>
+        
+                            <div id="sjkc_std2_timetable" style="display: none;">
+                                <label for="sjkc_std2_timetable_display" class="form-label">Timetable</label>
+                                <h3>SJKC STD 2 Timetable</h3>
+                            </div>
+                            
+                            <div id="sjkc_std3_timetable" style="display: none;">
+                                <label for="sjkc_std3_timetable_display" class="form-label">Timetable</label>
+                                <h3>SJKC STD 3 Timetable</h3>
+                            </div>
+                            
+                            <div id="sjkc_std4_timetable" style="display: none;">
+                                <label for="sjkc_std4_timetable_display" class="form-label">Timetable</label>
+                                <h3>SJKC STD 4 Timetable</h3>
+                            </div>
+                            
+                            <div id="sjkc_std5_timetable" style="display: none;">
+                                <label for="sjkc_std5_timetable_display" class="form-label">Timetable</label>
+                                <h3>SJKC STD 5 Timetable</h3>
+                            </div>
+                            
+                            <div id="sjkc_std6_timetable" style="display: none;">
+                                <label for="sjkc_std6_timetable_display" class="form-label">Timetable</label>
+                                <h3>SJKC STD 6 Timetable</h3>
+                            </div>
+        
+                            <div id="form1_timetable" style="display: none;">
+                                <img src="{% static 'images/secondary_form1_timetable.png' %}" width="500" height="900"><br><br>
+                                <div class="row">
+                                    {% for subject in kindergarten_subjects %}
+                                        <div class="col-md-3">
+                                            <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                            <select name="{{ subject }}" class="form-control">
+                                                <option value="" disabled selected>Select Timeslot</option>
+                                                <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                                {% for tuition_class in subjects %}
+                                                    {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Kindergarten" %}
+                                                        <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{tuition_class.weekly_day}} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <br>
+                            </div>
+        
+                            <div id="form2_timetable" style="display: none;">
+                                <img src="{% static 'images/secondary_form2_timetable.png' %}" width="550" height="900"><br><br>
+                                <div class="row">
+                                    {% for subject in secondary_subjects.form2 %}
+                                    <div class="col-md-4">
+                                        <label for="{{ subject }}" class="form-label"><b>{{ subject }}</b></label><br>
+                                        <select name="{{ subject }}" class="form-control" required>
+                                            <option value="" disabled selected>Select Timeslot</option>
+                                            <option value="0">Not Enrolling</option> <!-- Special value for not enrolling -->
+                                            {% for tuition_class in subjects %}
+                                                {% if tuition_class.subject == subject and tuition_class.tuition_class_study_level == "Secondary form2" %}
+                                                    <option value="{{ tuition_class.id }}">{{ tuition_class.tuition_class_name }} {{tuition_class.weekly_day}} {{ tuition_class.general_start_time }} - {{ tuition_class.general_end_time }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select><br>
+                                    </div>
+                                    {% endfor %}
+                                </div><br>
+                            </div>
+        
+                            <div id="form3_timetable" style="display: none;">
+                                <label for="form3_timetable_display" class="form-label">Timetable</label>
+                                <h3>FORM3 Timetable</h3>
+                            </div>
+                            
+                            <div id="form4_timetable" style="display: none;">
+                                <label for="form4_timetable_display" class="form-label">Timetable</label>
+                                <h3>FORM4 Timetable</h3>
+                            </div>
+                                
+                            <div id="form5_timetable" style="display: none;">
+                                <label for="form5_timetable_display" class="form-label">Timetable</label>
+                                <h3>FORM5 Timetable</h3>
+                            </div>
+        
+                            <label for="school_name" class="form-label"><b>&nbspSchool (Full Name Of The School)</b></label>
+                            <input type="school_name" class="form-control" id="school_name" name="school_name" required autocomplete="off">
+                        
+                            <br>
+                            <label for="startdate" class="form-label"><b>&nbspStart Date</b></label>
+                            <input type="date" class="form-control" id="startdate" name="startdate" required>
+                        
+                            <br>
+                            <label for="bankin_receipt" class="form-label"><b>Bank In Transfer Receipt</b></label>
+                            <input type="file" class="form-control" id="bankin_receipt" name="bankin_receipt" accept="image/*,.pdf" required onchange="validateFile('bankin_receipt','error_message');">
+                            <div id="error_message" style="color: red;"></div>
+        
+                            <br> 
+                            <label for="classin_phoneno" class="form-label"><b>&nbspRegistered Classin Mobile Number</b></label>
+                            <input type="text" class="form-control" id="classin_phoneno" name="classin_phoneno" required autocomplete="off">
+                            
+                            <br>
+                            <label for="phoneNo" class="form-label"><b>&nbspParent / Guardian Phone No.1</b></label>
+                            <input type="text" class="form-control" id="phoneNo" name="phoneNo" required autocomplete="off">
+                        
+                            <br>
+                            <label for="parent_phoneno2" class="form-label"><b>&nbspParent / Guardian Phone No.2 (Optional)</b></label>
+                            <input type="text" class="form-control" id="parent_phoneno2" name="parent_phoneno2"  autocomplete="off">
+                            
+                            <br>
+                            <label for="student_phoneno" class="form-label"><b>&nbspStudent Phone No. (Optional)</b></label>
+                            <input type="text" class="form-control" id="student_phoneno" name="student_phoneno" autocomplete="off">
+                        
+                            <br>
+                            <label for="student_ic_number" class="form-label"><b>&nbspStudent IC Number</b></label>
+                            <input type="text" class="form-control" id="student_ic_number" name="student_ic_number" required autocomplete="off">
+        
+                            <br>
+                            <label for="student_ic_photo" class="form-label"><b>Student IC (Snap Front IC)</b></label>
+                            <input type="file" class="form-control" id="student_ic_photo" name="student_ic_photo" accept="image/*,.pdf" required onchange="validateFile('student_ic_photo','error_message_ic');">
+                            <div id="error_message_ic" style="color: red;"></div>
+                                            
+                            <br>
+                            <label for="student_photo" class="form-label"><b>Student Photo (Passport Size Photo)</b></label>
+                            <input type="file" class="form-control" id="student_photo" name="student_photo" accept="image/*,.pdf" required onchange="validateFile('student_photo','error_message_photo');">
+                            <div id="error_message_photo" style="color: red;"></div>   
+                 
+                            <br><br>
+                            <label for="studenthomeaddress" class="form-label"><b>&nbspHome Address</b></label>
+                            <br>
+                            <label for="street1" class="form-label"><b>&nbspStreet 1</b></label>
+                            <input type="text" class="form-control" id="street1" name="street1" required autocomplete="off">
+                            <br>
+                            <label for="street2" class="form-label"><b>&nbspStreet 2</b></label>
+                            <input type="text" class="form-control" id="street2" name="street2" required autocomplete="off">
+                            <br>
+                            <label for="city" class="form-label"><b>&nbspCity</b></label>
+                            <input type="text" class="form-control" id="city" name="city" required autocomplete="off">
+                            <br>
+                            <label for="postalcode" class="form-label"><b>&nbspPostal Code</b></label>
+                            <input type="text" class="form-control" id="postalcode" name="postalcode" required autocomplete="off">
+                            <br>
+                            <label for="state" class="form-label"><b>&nbspState</b></label>
+                            <input type="text" class="form-control" id="state" name="state" required autocomplete="off">
+                        
+                            <br><br>
+                            <label for="know_us_from" class="form-label"><b>From where you know us?</b></label>
+                            <br>
+                            <input type="checkbox" id="facebook" name="facebook"> <!--removed class="form-control"-->
+                            <label for="facebook" class="form-label">Facebook</label>
+                            <br>
+                            <input type="checkbox"  id="instagram" name="instagram">
+                            <label for="instagram" class="form-label">Instagram</label>
+                            <br>
+                            <input type="checkbox" id="google" name="google">
+                            <label for="google" class="form-label">Google</label>
+                            <br>
+                            <input type="checkbox" id="tiktok" name="tiktok">
+                            <label for="tiktok" class="form-label">Tik Tok</label>
+                            <br>
+                            <input type="checkbox"  id="friend" name="friend">
+                            <label for="friend" class="form-label">Friend</label>
+                            <br>
+                            <input type="checkbox"  id="xhs" name="xhs">
+                            <label for="xhs" class="form-label">小红书</label>
+                            <br>
+                            <input type="checkbox"  id="sibling" name="sibling">
+                            <label for="sibling" class="form-label">Sibling or Family Member</label>
+                            <br>
+                            <input type="checkbox" id="other" name="other" onclick="isChecked()">
+                            <label for="other" class="form-label">Other</label>
+                            <p id="displayOther" style="display:none"><input type="text" class="form-control" id="displayOther1" name="displayOther" placeholder="Please type here"><br></p>
+        
+                        </div>
+
+                            
+                        <div class="containerbutton">
+                            <a href="{% url 'student_list_view' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModal">Save</button>
+                        </div>
+                    </form>
+                </div>
+
+                 <!--Save Confirmation Modal-->
+                <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel"><b>Confirm Save</b></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure want to save the changes?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="margin-right: 10px;">Cancel</button>
+                                <button type="submit" form= "saveForm" class="btn btn-primary">Save</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab2" class="tab-pane fade">
+                    <br>
+                    <div class="content-container">
+                        hi
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script>
+        function isChecked() {
+            var checkBox = document.getElementById("other");
+            var text = document.getElementById("displayOther");
+            
+            if (checkBox.checked == true){
+                text.style.display = "block";
+            } else {
+                text.style.display = "none";
+            }
+        }
+
+        const educationLevelSelect = document.getElementById('school_level');
+        const schoolTypeDiv = document.getElementById('primary_school_type');
+        const schoolTypeSelect = document.getElementById('primary_school_type_select');
+        const skLevelDiv = document.getElementById('sk_level');
+        const skLevelSelect = document.getElementById('sk_level_select');
+        const sjkcLevelDiv = document.getElementById('sjkc_level');
+        const sjkcLevelSelect = document.getElementById('sjkc_level_select');
+        const secondaryLevelDiv = document.getElementById('secondary_level');
+        const secondaryLevelSelect = document.getElementById('secondary_level_select');
+        const kindergartenTimetable = document.getElementById('kindergarten_timetable');
+        const skStd1Timetable = document.getElementById('sk_std1_timetable');
+        const skStd2Timetable = document.getElementById('sk_std2_timetable');
+        const skStd3Timetable = document.getElementById('sk_std3_timetable');
+        const skStd4Timetable = document.getElementById('sk_std4_timetable');
+        const skStd5Timetable = document.getElementById('sk_std5_timetable');
+        const skStd6Timetable = document.getElementById('sk_std6_timetable');
+        const sjkcStd1Timetable = document.getElementById('sjkc_std1_timetable');
+        const sjkcStd2Timetable = document.getElementById('sjkc_std2_timetable');
+        const sjkcStd3Timetable = document.getElementById('sjkc_std3_timetable');
+        const sjkcStd4Timetable = document.getElementById('sjkc_std4_timetable');
+        const sjkcStd5Timetable = document.getElementById('sjkc_std5_timetable');
+        const sjkcStd6Timetable = document.getElementById('sjkc_std6_timetable');
+        const form1Timetable = document.getElementById('form1_timetable');
+        const form2Timetable = document.getElementById('form2_timetable');
+        const form3Timetable = document.getElementById('form3_timetable');
+        const form4Timetable = document.getElementById('form4_timetable');
+        const form5Timetable = document.getElementById('form5_timetable');
+        const form6Timetable = document.getElementById('form6_timetable');
+        
+        educationLevelSelect.addEventListener('change', () => {
+            if (educationLevelSelect.value === 'kindergarten'){
+                
+                schoolTypeDiv.style.display = 'none';
+                skLevelDiv.style.display = 'none';
+                sjkcLevelDiv.style.display= 'none';
+                secondaryLevelDiv.style.display = 'none';
+                kindergartenTimetable.style.display = 'block';
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            }
+            else if (educationLevelSelect.value === 'primary') {
+                schoolTypeDiv.style.display = 'block';
+                skLevelDiv.style.display = 'none';
+                sjkcLevelDiv.style.display= 'none';
+                secondaryLevelDiv.style.display = 'none';
+                kindergartenTimetable.style.display = 'none';
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            } 
+            else if (educationLevelSelect.value === 'secondary'){
+                schoolTypeDiv.style.display = 'none';
+                skLevelDiv.style.display = 'none';
+                sjkcLevelDiv.style.display= 'none';
+                secondaryLevelDiv.style.display = 'block';
+                kindergartenTimetable.style.display = 'none';
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            }else{
+                schoolTypeDiv.style.display = 'none';
+                skLevelDiv.style.display = 'none';
+                sjkcLevelDiv.style.display= 'none';
+                secondaryLevelDiv.style.display = 'none';
+                kindergartenTimetable.style.display = 'none';
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            }
+        });
+        
+        schoolTypeSelect.addEventListener('change', () => {
+            if (schoolTypeSelect.value === 'sk') {
+                skLevelDiv.style.display = 'block';
+                sjkcLevelDiv.style.display = 'none';
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            } 
+            else if (schoolTypeSelect.value === 'sjkc'){
+                sjkcLevelDiv.style.display = 'block';
+                skLevelDiv.style.display = 'none';
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            }
+        });
+        
+        skLevelSelect.addEventListener('change', () => {
+            if (skLevelSelect.value === 'standard1'){
+                skStd1Timetable.style.display='block';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+            } 
+            else if (skLevelSelect.value === 'standard2'){
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='block';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+            } 
+            else if (skLevelSelect.value === 'standard3'){
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='block';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+            } 
+            else if (skLevelSelect.value === 'standard4'){
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='block';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+            } 
+            else if (skLevelSelect.value === 'standard5'){
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='block';
+                skStd6Timetable.style.display='none';
+            } 
+            else if (skLevelSelect.value === 'standard6'){
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='block';
+            }
+            else{
+                skStd1Timetable.style.display='none';
+                skStd2Timetable.style.display='none';
+                skStd3Timetable.style.display='none';
+                skStd4Timetable.style.display='none';
+                skStd5Timetable.style.display='none';
+                skStd6Timetable.style.display='none';
+            }
+        })
+        
+        sjkcLevelSelect.addEventListener('change', () =>{
+            if (sjkcLevelSelect.value === 'standard1'){
+                sjkcStd1Timetable.style.display='block';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            } else if (sjkcLevelSelect.value === 'standard2'){
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='block';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            } 
+            else if (sjkcLevelSelect.value === 'standard3'){
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='block';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            } 
+            else if (sjkcLevelSelect.value === 'standard4'){
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='block';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            } 
+            else if (sjkcLevelSelect.value === 'standard5'){
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='block';
+                sjkcStd6Timetable.style.display='none';
+            } 
+            else if (sjkcLevelSelect.value === 'standard6'){
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='block';
+            }
+            else{
+                sjkcStd1Timetable.style.display='none';
+                sjkcStd2Timetable.style.display='none';
+                sjkcStd3Timetable.style.display='none';
+                sjkcStd4Timetable.style.display='none';
+                sjkcStd5Timetable.style.display='none';
+                sjkcStd6Timetable.style.display='none';
+            }
+        })
+        
+        secondaryLevelSelect.addEventListener('change', () =>{
+            if (secondaryLevelSelect.value === 'form1'){
+                form1Timetable.style.display='block';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            } 
+            else if (secondaryLevelSelect.value === 'form2'){
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='block';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            } 
+            else if (secondaryLevelSelect.value === 'form3'){
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='block';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            }
+            else if (secondaryLevelSelect.value === 'form4'){
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='block';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            } 
+            else if (secondaryLevelSelect.value === 'form5'){
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='block';
+                form6Timetable.style.display='none';
+            } 
+            else if (secondaryLevelSelect.value === 'form6'){
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='block';
+            }
+            else{
+                form1Timetable.style.display='none';
+                form2Timetable.style.display='none';
+                form3Timetable.style.display='none';
+                form4Timetable.style.display='none';
+                form5Timetable.style.display='none';
+                form6Timetable.style.display='none';
+            }
+            })
+
+            function togglePasswordVisibility(inputId, iconId) {
+                var input = document.getElementById(inputId);
+                var icon = document.getElementById(iconId);
+                
+                if (input.type === "password") {
+                    input.type = "text";
+                    icon.classList.remove("fa-eye-slash");
+                    icon.classList.add("fa-eye");
+                } else {
+                    input.type = "password";
+                    icon.classList.remove("fa-eye");
+                    icon.classList.add("fa-eye-slash");
+                }
+            }
+
+            function validateFile(inputId, errorMessageId) {
+                var fileInput = document.getElementById(inputId);
+                var allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf']; // Allowed file extensions
+                
+                var fileName = fileInput.value;
+                var fileExtension = fileName.split('.').pop().toLowerCase();
+                
+                if (allowedExtensions.indexOf(fileExtension) === -1) {
+                    document.getElementById(errorMessageId).innerText = 'Invalid file type. Please upload a valid image or PDF file.';
+                    fileInput.value = ''; // Clear the file input
+                    return false;
+                }
+                
+                document.getElementById(errorMessageId).innerText = ''; // Clear the error message
+                return true;
+            }
+
+            function clearErrorMessage(){
+                document.getElementById(errorMessageId).innerText = '';
+            } 
+
+
+    </script>
+</html>
+ 
+{% endblock %}

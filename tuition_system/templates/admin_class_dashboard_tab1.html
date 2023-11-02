@@ -1,0 +1,184 @@
+<html>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .tab-pane {
+            background-color: #FFFFFF;
+        }
+
+        .card{
+            border: 1px solid #e7e7e7;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(160, 160, 160, 0.2);
+            margin-top: 20px;
+            margin-right: 20px;
+        }
+
+        .card-body{
+            padding: 20px;
+        }
+
+        .chart-card{
+            border: 1px solid #e7e7e7;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(160, 180, 160, 0.2);
+            background-color: #ffffff;
+            padding: 20px;
+            margin-top: 20px;
+            margin-right: 20px;
+        }
+
+        .chart-container{
+            display: flex;
+            gap: 20px;
+        }
+
+        .chart{
+            flex: 1;
+        }
+    </style>
+    <body>
+        <br>
+        <div class="container">
+            <div class="row">
+
+                <!--First Card-->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="font-size: 24px; font-weight: bold;">
+                                {{ total_classes }}
+                            </div>
+                            <div style="font-size: 16px; color: gray;">
+                                Total Classes
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Second Card-->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="font-size: 24px; font-weight: bold;">
+                                {{ active_classes.count }}
+                            </div>
+                            <div style="font-size: 16px; color: gray;">
+                                Active Classes
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Third Card-->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="font-size: 24px; font-weight: bold;">
+                                {{ archived_classes.count }}
+                            </div>
+                            <div style="font-size: 16px; color: gray;">
+                                Archived Classes
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br><br><br>
+
+            <div class="row">
+                <!-- Chart Cards -->
+                <div class="col-md-6">
+                    <div class="card chart-card">
+                        <div class="card-body">
+                            <div id="subject-pie-chart" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card chart-card">
+                        <div class="card-body">
+                            <div id="bar-chart" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br><br>
+        
+        <script>
+            var data = [
+                {
+                    labels: {{ subjects|safe }} , 
+                    values: {{ class_counts|safe }},
+                    type: 'pie',
+                    hole: 0.4,
+                    textinfo: 'label+percent',
+                    textposition: 'outside',
+                    insidetextorientation: 'radial',
+                   
+                }
+            ];
+
+            var layout = {
+                title: {
+                    text: '<b>Class Distributions by Subjects</b>',
+                    font:{
+                        size: 20,
+                        family: 'Arial, sans-serif',
+                        color: 'black',
+                    },
+                },
+                showarrow: true,
+                legend:{
+                    x: 1.5,
+                    y: 0.5,
+                    font:{
+                        size: 10,
+                    },
+                  
+                    
+                }
+            };
+
+            Plotly.newPlot('subject-pie-chart', data, layout);
+        </script>
+
+
+        <script>
+            var class_names = {{ class_names|safe }};
+            var student_counts = {{ student_counts|safe }};
+            
+            var data = [{
+                x: class_names,
+                y: student_counts,
+                type: 'bar',
+                marker: {
+                    color: '#B5D1FF'
+                }
+            }];
+
+            var layout = {
+                title: {
+                    text: '<b>Top 5 Popular Active Class</b>',
+                    font:{
+                        size: 20,
+                        family: 'Arial, sans-serif',
+                        color: 'black',
+                    },
+                },
+                xaxis: {
+                    title: 'Class Name',
+                    automargin: true,
+                    
+                },
+                yaxis: {
+                    title: 'Total Number of Students',
+                    linecolor: 'lightgray',  // Set the color of the x-axis line
+                    linewidth: 1,
+                }
+            };
+
+            Plotly.newPlot('bar-chart', data, layout);
+        </script>
+    </body>    
+</html>

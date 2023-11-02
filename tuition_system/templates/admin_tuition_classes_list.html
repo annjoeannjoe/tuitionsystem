@@ -1,0 +1,139 @@
+{% extends 'sidebar_admin.html' %}
+{% block content %}
+<html>
+    <head></head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        .tab-pane {
+            background-color: #FFFFFF;
+        }
+
+        .addclassbtn{
+            color: white;
+            text-decoration: none;
+        }
+
+        button[type=button]:hover .addclassbtn{
+            color: white;
+        }
+
+        .add-class-container{
+            text-align: right;
+        }
+
+        .table{
+            width: 100%;
+        }
+
+        th{
+            cursor: pointer;
+        }
+
+        .table th,
+        .table td{
+            padding: 8px;
+        }
+
+        .table th {
+            background-color: #17324c;
+            color: #ffffff;
+        }
+
+        .header-wrapper{
+            display: flex;
+            align-items: center;
+        }
+
+        .header-wrapper span{
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-wrapper i{
+            margin-left: 4px;
+        }
+        
+        .edit-button{
+            background-color: #00bec1;
+            border: #00bec1;
+        }
+
+        .edit-button:hover{
+            background-color: #009496;
+        }
+
+        .tuition_class_name{
+            color: #333;
+        }
+
+        .tuition_class_name a{
+            color: #6A76FF;
+            text-decoration: none;
+        }
+
+        .tuition_class_name a:hover{
+            color: #1650E1;
+        }
+
+    </style>
+
+    <body>
+        <br>
+        <h4><b>List of Tuition Classes</b></h4>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="container mt-5">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab1">Active Class(es)</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab2">Archived Class(es)</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="tab1" class="tab-pane fade show active">
+                    {% include 'admin_tuition_classes_list_tab1.html' %}
+                </div>
+                <div id="tab2" class="tab-pane fade">
+                    {% include 'admin_tuition_classes_list_tab2.html' %}
+                </div>
+            </div>
+        </div>
+        
+        
+
+    </body>
+
+    <script>
+        // Get the active_tab variable from the template
+        var activeTab = "{{ active_tab }}";
+
+        // Set the active tab
+        $(document).ready(function() {
+            $('.nav-tabs a[href="#' + activeTab + '"]').tab('show');
+        });
+
+
+        // Function to hide the success message after a delay
+        function hideSuccessMessage() {
+            var successMessage = document.querySelector(".alert-success");
+            if (successMessage) {
+                setTimeout(function() {
+                    successMessage.style.display = "none";
+                }, 3000); // Adjust the delay (in milliseconds) as needed (e.g., 5000ms = 5 seconds)
+            }
+        }
+        // Call the hideSuccessMessage function when the page loads
+        window.onload = hideSuccessMessage;
+        
+    </script>
+</html>
+{% endblock %}

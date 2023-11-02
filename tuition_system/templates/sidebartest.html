@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body {
+  font-family: "Lato", sans-serif;
+}
+
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #EFEFEF;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.sidebar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 20px;
+  color: black;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidebar a:hover {
+  color: #111;
+}
+
+.sidebar .closeButton {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+  color: #000000;
+}
+
+.openButton {
+  font-size: 20px;
+  cursor: pointer;
+  background-color: white;
+  color: #111;
+  padding: 10px 15px;
+  border: none;
+}
+
+.openButton:hover {
+  background-color: #EFEFEF;
+}
+
+#main {
+  transition: margin-left .5s;
+  padding: 16px;
+}
+
+.dropdown-btn {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 20px;
+  color: black;
+  display: block;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidebar {padding-top: 15px;}
+  .sidebar a {font-size: 18px;}
+}
+
+
+/* Add an active class to the active dropdown button */
+.active {
+  background-color: #EFEFEF;
+  color: black;
+  
+}
+
+/* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
+.dropdown-container {
+  display: none;
+  background-color: #DADADA;
+  padding-left: 8px;
+}
+
+/* Optional: Style the caret down icon */
+.fa-angle-down {
+  float: right;
+  padding-right: 8px;
+}
+
+/* Some media queries for responsiveness */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+/*test*/
+.sidebar-header .user-info .user-role{
+  color: #000000;
+  font-size: 12px;
+}
+
+.sidebar-header .user-info{
+  color: #1521ff;
+  float: left;
+
+}
+
+.sidebar-header .user-info > span{
+  display: block;
+}
+
+</style>
+</head>
+<body>
+
+
+
+<div id="sidebar" class="sidebar">
+
+  <a href="javascript:void(0)" class="closeButton" onclick="closeSideBar()">×</a>
+  <br><br>
+
+  <div class="siderbar-header">
+    <div class="user-info">
+      <i class="fa fa-user"></i>
+      <p class="username">Ann Joe</p>
+      <p class="user-role">Student</p>
+    </div>
+  </div>
+
+  <div class="sidebar-menu">
+    <ul>
+      <!--Analytics-->
+      <li class="sidebar-dropdown">
+        <a href="#">
+          <i class="fa fa-tachometer-alt"></i>
+          <span>Analytics</span>
+        </a>
+
+        <div class="sidebar-menu">
+          <ul>
+            <li>
+              <a href="{% url 'class_list_dashboard' %}">Class</a>
+            </li>
+            <li>
+              <a href="#">Student</a>
+            </li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="sidebar-dropdown">
+        <a href="#">
+          <i class="fa fa-shopping-cart"></i>
+          <span>User</span>
+        </a>
+        <div class="sidebar-menu">
+          <ul>
+            <li>
+              <a href="#">Admin</a>
+            </li>
+            <li>
+              <a href="#">Student</a>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+  
+  
+
+
+  <button class="dropdown-btn">Class 
+    <i class="fa fa-angle-down"></i>
+  </button>
+  <div class="dropdown-container">
+    <a href="{% url 'class_list_dashboard' %}">List</a>
+    <a href="#">Timetable</a>
+    <a href="{% url 'class_requestenrolment_dashboard' %}">Request Enrolment</a>
+    <a href="#"></i>Announcement</a>
+  </div>
+</div>
+
+<div id="main">
+
+  {% load static %}
+  <!--<div class="logo">
+    <img src="{% static 'images/tuisys-logo.png' %}" width="200" height="50">
+  </div>-->
+ 
+  <button class="openButton" onclick="openSideBar()">
+     <i class="fa fa-align-justify"></i>
+  </button>
+  <img src="{% static 'images/tuisys-logo.png' %}" width="100" height="25">
+
+  <div class="container-fluid">
+    {% block content %}{% endblock %}
+  </div>
+  
+</div>
+
+
+
+<script>
+function openSideBar() {
+  document.getElementById("sidebar").style.width = "250px";
+  document.getElementById("main").style.marginLeft = "250px";
+}
+
+function closeSideBar() {
+  document.getElementById("sidebar").style.width = "0";
+  document.getElementById("main").style.marginLeft= "0";
+}
+
+/* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
+var dropdown = document.getElementsByClassName("dropdown-btn");
+var i;
+
+for (i = 0; i < dropdown.length; i++) {
+  dropdown[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var dropdownContent = this.nextElementSibling;
+    if (dropdownContent.style.display === "block") {
+      dropdownContent.style.display = "none";
+    } else {
+      dropdownContent.style.display = "block";
+    }
+  });
+}
+</script>
+   
+</body>
+</html> 

@@ -1,0 +1,261 @@
+{% extends 'sidebar_admin.html' %}
+
+{% block content %}
+
+<html>
+    <head>
+    </head>
+
+    <style>
+        .table{
+            width: 100%;
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+        }
+
+        th{
+            cursor: pointer;
+        }
+
+        .table th,
+        .table td{
+            padding: 8px;
+        }
+
+        .table th {
+            background-color: #21486c;
+            color: #ffffff;
+        }
+        
+        .header-wrapper{
+            display: flex;
+            align-items: center;
+        }
+
+        .header-wrapper span{
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-wrapper i{
+            margin-left: 4px;
+        }
+          
+
+    </style>
+
+    <body>
+        <br>
+        <h4><b>Enrolment Requests</b></h4>
+
+        <br><br>
+        <table id="enrolment_request_table" class="table table-hover">
+            <thead>
+                <tr>
+                    <th><span>No.</span></th>
+                    <th onclick="sortTable(1)">
+                        <div class="header-wrapper">
+                            <span>
+                                Student Name
+                                <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                            </span>
+                        </div>
+                    </th>
+                    <th onclick="sortTable(2)">
+                        <div class="header-wrapper">
+                            <span>
+                                Study Level
+                                <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                            </span>
+                        </div>
+                    </th>
+                    <th onclick="sortTable(3)">
+                        <div class="header-wrapper">
+                            <span>
+                                Class Enrol
+                                <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                            </span>
+                        </div>
+                    </th>
+                    <th>
+                        <span>Enrol Status</span>
+                    </th>
+                    <th onclick="sortTable(5)">
+                        <div class="header-wrapper">
+                            <span>
+                                Request Type
+                                <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                            </span>
+                        </div>
+                    </th>
+                    <th onclick="sortTable(6)">
+                        <div class="header-wrapper">
+                            <span>
+                                Request Time
+                                <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                            </span>
+                        </div>
+                      </th>
+                    <th>
+                        <span>Action</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in enrolment_requests %}
+                <tr>
+                    <td>{{ enrolment_requests.start_index|add:forloop.counter0 }}</td>
+                    <td>{{ request.student.user.full_name }}
+                        <h6><span style="font-size: smaller; color: gray;">{{ request.student.user.email }}</span></h6>
+                    </td>
+                    <td>{{ request.tuition_classes.tuition_class_study_level }}</td>
+                    <td>{{ request.tuition_classes.tuition_class_name }}</td>
+                    <td>{{ request.enrolment_status}}</td>
+                    <td>{{ request.request_type }}</td>
+                    <td>{{ request.request_created_at|date:"Y-m-d H:i:s"}}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#acceptModal{{ request.id }}">Accept</button>
+                        <span style="margin-right: 10px;"></span>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal{{ request.id }}">Reject</button>
+
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+        <br>
+
+        <!--Boostrap Pagination Component-->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+                {% if enrolment_requests.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ enrolment_requests.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+        
+                {% for i in page_range %}
+                    {% if i == enrolment_requests.number %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ i }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+        
+                {% if enrolment_requests.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ enrolment_requests.next_page_number }}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ enrolment_requests.paginator.num_pages }}">Last</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        
+
+        <!--Accept Modal-->
+        {% for request in enrolment_requests %}
+        <div class="modal fade" id="acceptModal{{ request.id }}" tabindex="-1" role="dialog" aria-labelledby="acceptModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><b>Confirm Accept</b></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure want to accept the enrolment of {{ request.student.user.full_name }}?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <a href="{% url 'accept_enrolment' request.id %}" class="btn btn-primary">Accept</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!--Reject Modal-->
+        {% for request in enrolment_requests %}
+        <div class="modal fade" id="rejectModal{{ request.id }}" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><b>Confirm Delete</b></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure want to reject the enrolment of {{ request.student.user.full_name }}?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <a href="{% url 'reject_enrolment' request.id %}" class="btn btn-danger">Reject</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </body>
+
+    <script>
+        function sortTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("enrolment_request_table"); // Use the correct table id
+            switching = true;
+            dir = "asc";
+            
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    
+                    // Extracting the text content from different columns
+                    x = rows[i].getElementsByTagName("td")[n].textContent.trim(); // Use textContent to get the text
+                    y = rows[i + 1].getElementsByTagName("td")[n].textContent.trim(); // Use textContent to get the text
+                    
+                    // Compare using localeCompare for case-insensitive sorting
+                    var compareResult = x.localeCompare(y, undefined, { sensitivity: 'base' });
+                    
+                    if (dir == "asc") {
+                        if (compareResult > 0) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (compareResult < 0) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+</script>
+
+
+
+</html>
+{% endblock %}

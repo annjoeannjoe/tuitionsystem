@@ -1,0 +1,55 @@
+{% extends "sidebar_admin.html" %}
+{% block content %}
+<h1>testing</h1>
+<hr>
+
+<button
+    type="button"
+    class="btn btn-primary"
+    data-toggle="modal"
+    data-target="#reg_event_modal"
+    disabled
+>
+    Register
+</button>
+
+<button
+    type="button"
+    class="btn btn-primary"
+    data-toggle="modal"
+    data-target="#reg_event_modal"
+>
+    Register
+</button>
+
+<!-- Modal for Add Event -->
+<form method="POST">
+    {% csrf_token %}
+    <div class="modal fade" id="reg_event_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Register Event</h5>
+                    <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                    >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-center">Confirm to register for this event?</p>
+                </div>
+                <div class="modal-footer">
+                    <div class="mx-auto">
+                        <button type="submit" class="btn btn-success" name="register">Yes</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

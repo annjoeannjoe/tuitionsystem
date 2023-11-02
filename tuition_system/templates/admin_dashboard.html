@@ -1,0 +1,167 @@
+{% extends "sidebar_admin.html" %}
+{% block content %} 
+<html>
+    <head>
+        <style>
+
+            h3{
+                margin-left: 10px;
+            }
+            .container{
+                background-color: #F8F8F8;
+                padding: 15px 5%; /*Decrease left and right padding*/
+                padding-bottom: 45px;
+                border-radius: 10px;
+                max-width: 800px; /*Set ,aximum width*/
+                margin: 0 auto;
+            }
+
+            .form-row{
+                display: flex;
+                flex-wrap: wrap;
+                margin-right: -15px;
+                margin-left: -15px;;
+            }
+
+            .form-group{
+                padding-right: 100px; 
+                padding-left: 30px;
+                margin-bottom: 1rem;
+                margin: 0 auto;
+            }
+
+
+
+            .form-control{
+                height: 30px;
+                width: 200px;
+            }
+
+            button[type=submit]{
+                width: 15%;
+                border-radius: 8px;
+                border: 2px solid #081163;
+                background-color: #081163;
+                color: white;
+                margin-left: 650px;
+                padding: 8px 5px;
+            }
+
+            .submitbtn{
+                color: inherit;
+                color: white;
+                text-decoration: none;
+            }
+
+         
+        </style>
+        <body>
+            <h3>Add Subject</h3>
+            
+            <div class="container">
+                <h3><u><center>Add Subject</center></u></h3>
+                <br>
+                <div class="form-row">
+                    <div class="form-group col-md-6 ">
+                        <label for="input1" class="input1">Select Subject</label><br>
+                        <select class="form-control" id="bmtimetable" name="bmtimetable">
+                            <option value="" selected disabled hidden>Select Subject</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                            <option value="option3">Option 3</option>
+                            <option value="option4">Not Applicable</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="input2">Select Timeslot</label><br>
+                        <select class="form-control" id="sctimetable" name="sctimetable">
+                            <option value="" selected disabled hidden>Select Timeslot</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                            <option value="option3">Option 3</option>
+                            <option value="option4">Not Applicable</option>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="input1">Select Subject</label><br>
+                        <select class="form-control" id="bitimetable" name="bitimetable">
+                            <option value="" selected disabled hidden>Select Subject</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                            <option value="option3">Option 3</option>
+                            <option value="option4">Not Applicable</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="input2">Select Timeslot</label><br>
+                        <select class="form-control" id="sejtimetable" name="sejtimetable">
+                            <option value="" selected disabled hidden>Select Timeslot</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                            <option value="option3">Option 3</option>
+                            <option value="option4">Not Applicable</option>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="input1">Select Subject</label><br>
+                        <select class="form-control" id="bctimetable" name="bctimetable">
+                            <option value="" selected disabled hidden>Select Subject</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                            <option value="option3">Option 3</option>
+                            <option value="option4">Not Applicable</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="input2">Select Timeslot</label><br>
+                        <select class="form-control" id="geotimetable" name="geotimetable">
+                            <option value="" selected disabled hidden>Select Timeslot</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                            <option value="option3">Option 3</option>
+                            <option value="option4">Not Applicable</option>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="input1">Select Subject</label><br>
+                        <select class="form-control" id="mathtimetable" name="mathtimetable">
+                            <option value="" selected disabled hidden>Select Subject</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                            <option value="option3">Option 3</option>
+                            <option value="option4">Not Applicable</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="input2">Select Timeslot</label><br>
+                        <select class="form-control" id="rbttimetable" name="rbttimetable">
+                            <option value="" selected disabled hidden>Select Timeslot</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                            <option value="option3">Option 3</option>
+                            <option value="option4">Not Applicable</option>
+                        </select>
+                    </div>
+                </div>
+                <br><br>
+
+                
+                <button type ="submit"><a href ="{% url 'class_requestenrolment_dashboard' %}" class="submitbtn">Submit</a></button>
+     
+            </div>
+          
+   
+        </body>
+    </head>
+</html>
+
+{% endblock %}

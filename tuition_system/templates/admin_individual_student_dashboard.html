@@ -1,0 +1,235 @@
+{% extends 'sidebar_admin.html' %}
+{% block content %}
+<html>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .card{
+            border: 1px solid #e7e7e7;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(160, 160, 160, 0.2);
+            margin-right: 2px;
+        }
+
+        .card-body{
+            padding: 20px;
+        }
+
+        .custom-table{
+            border: 1px solid #ccc;
+        }
+
+        .custom-table th,
+        .custom-table td{
+            border: 1px solid #ccc;
+        }
+
+        .table th{
+            background-color: #ffefea;
+        }
+        
+    </style>
+    <body>
+        <br>
+        <div class="container">
+            <div class="row">
+                <h4><b>{{ student.user.full_name }}</b></h4>
+                <h6><span style="color: gray;">{{ student.school_level|capfirst }}</span></h6>
+                {% if student.school_level == "primary" %} 
+                    <h6><span style="color: gray;">{{student.primary_school_type|capfirst }}</span></h6> 
+                    {% if student.primary_school_type == "sk" %}
+                    <h6><span style="color: gray;">{{student.sk_level|capfirst }}</span></h6>
+                    {% elif student.primary_school_type == "sjkc" %}
+                    <h6><span style="color: gray;">{{student.sjkc_level|capfirst }}</span></h6>
+                    {% endif %}
+                {% elif student.school_level == "secondary" %}
+                    <h6><span style="color: gray;">{{student.secondary_level|capfirst }}</span></h6>
+                {% endif %}
+                <br><br><br>
+
+                <!--First Card-->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="font-size: 22px;">
+                            {% if student.is_archived %}
+                                <p><b>Acrhived</b></p>
+                            {% else %}
+                                <p><b>Active</b></p>
+                            {% endif %}
+                            </div>
+                            <div style="font-size: 16px; color: gray;">
+                                Status
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Second Card-->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="font-size: 22px;">
+                                <p><b>{{ active_enrollments_counts_student }}</b></p>
+                            </div>
+                            <div style="font-size: 16px; color: gray;">
+                                Active Enrolment(s)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Third Card-->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="font-size: 22px;">
+                                <p><b>{{ dropped_enrollments_count_student }}</b></p>
+                            </div>
+                            <div style="font-size: 16px; color: gray;">
+                                Dropped Enrolment(s)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br><br>
+                
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="font-size: 22px;">
+                                <p><b>{{ days_since_joined }}</b></p>
+                            </div>
+                            <div style="font-size: 16px; color: gray;">
+                                Days Since Enrolment
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+            <div class="rows">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <div id="enrollment-pie-chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+            <div class="rows">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 style="font-size: larger;"><b>Student Class Evaluations</b></h6>
+                            <br>
+                            <table id="evaluation_table" class="table custom-table">
+                                <thead>
+                                    <tr>
+                                        <th><span>Date</span></th>
+                                        <th><span>Tuition Class Name</span></th>
+                                        <th><span>Tutor Name</span></th>
+                                        <th><span>Evaluation</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for evaluation in student_evaluations %}
+                                    <tr>
+                                        <td>{{ evaluation.created_at|date:"Y-m-d" }}</td>
+                                        <td>{{ evaluation.tuition_classes.tuition_class_name }}</td>
+                                        <td>{{ evaluation.tuition_classes.tutor_name }}</td>
+                                        <td>{{ evaluation.subject_evaluation_content }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+                            <!-- Pagination controls -->
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-end">
+                                    {% if student_evaluations.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1" aria-label="First">
+                                            First
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ student_evaluations.previous_page_number }}" aria-label="Previous">
+                                            Previous
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                            
+                                    {% for i in page_range %}
+                                    {% if i == student_evaluations.number %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ i }}</span>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                    </li>
+                                    {% endif %}
+                                    {% endfor %}
+                            
+                                    {% if student_evaluations.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ student_evaluations.next_page_number }}" aria-label="Next">
+                                            Next
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ student_evaluations.paginator.num_pages }}" aria-label="Last">
+                                            Last
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </div>
+    </body>
+    <script>
+        var data = [
+            {
+                labels: ['Active Enrolments', 'Dropped Enrolments'],
+                values: [{{ active_enrollments_counts_student }}, {{ dropped_enrollments_count_student }}],
+                type: 'pie',
+                hole: 0.7,
+                textinfo: 'percent',
+                textposition: 'outside',
+                insidetextorientation: 'radial',
+                marker: {
+                    colors: ['#4fd1b0', '#f26684']
+                }
+            }
+        ];
+
+        var layout = {
+            title: '<b>Student Class Enrolments Overview</b>',
+            font: {
+                size: 14,
+                family: 'Arial, sans-serif',
+                color: 'black',
+            },
+            showarrow: true,
+            legend:{
+                x: 1.0,
+                y: 0.4,
+                font: {
+                    size: 12,
+                },
+            },
+        };
+
+        Plotly.newPlot('enrollment-pie-chart', data, layout)
+    </script>
+</html>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'sidebar_admin.html' %}
+{% block content %}
+<html>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .tab-pane{
+            background-color: #FFFFFF;
+        }
+    </style>
+    <body>
+        <div class="container mt-5">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#tab1">Overall Class Analysis</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#tab2">Individual Class Analysis</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <br>
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                <div id="tab1" class="tab-pane fade show active">
+                    {% include 'admin_class_dashboard_tab1.html' %}
+                </div>
+                <div id="tab2" class="tab-pane fade">
+                    {% include 'admin_class_dashboard_tab2.html' %}
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script>
+        // Get the active_tab variable from the template
+        var activeTab = "{{ active_tab }}";
+
+        // Set the active tab
+        $(document).ready(function() {
+            $('.nav-tabs a[href="#' + activeTab + '"]').tab('show');
+        });
+
+
+        // Function to hide the success message after a delay
+        function hideSuccessMessage() {
+            var successMessage = document.querySelector(".alert-success");
+            if (successMessage) {
+                setTimeout(function() {
+                    successMessage.style.display = "none";
+                }, 3000); // Adjust the delay (in milliseconds) as needed (e.g., 5000ms = 5 seconds)
+            }
+        }
+        // Call the hideSuccessMessage function when the page loads
+        window.onload = hideSuccessMessage;
+        
+    </script>
+
+
+
+    
+</html>
+{% endblock %}

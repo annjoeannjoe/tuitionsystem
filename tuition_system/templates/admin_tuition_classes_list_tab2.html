@@ -1,0 +1,269 @@
+<html>
+    <style>
+        .unarchive-button{
+            background-color: #b2abff !important;
+            border: #B2ABFF !important;
+            color: white !important;
+        }
+
+        .unarchive-button:hover{
+            background-color: #8d83ff !important;
+            border: #8D83FF !important;
+            color: white !important;
+        }
+
+        .table{
+            width: 100%;
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+        }
+
+        th{
+            cursor: pointer;
+        }
+
+        .table th,
+        .table td{
+            padding: 8px;
+        }
+
+        .table th{
+            background-color: #21486c;
+            color: #FFFFFF;
+        }
+
+        .header-wrapper{
+            display: flex;
+            align-items: center;
+        }
+
+        .header-wrapper span{
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-wrapper i{
+            margin-left: 4px;
+        }
+
+        .edit-button{
+            background-color: #00BEC1 !important;
+            border: #00BEC1 !important;
+        }
+
+        .edit-button:hover{
+            background-color: #009496 !important;
+        }
+
+        .tuition_class_name{
+            color: #333;
+        }
+
+        .tuition_class_name a{
+            color: #6A76FF;
+            text-decoration: none;
+        }
+
+        .tuition_class_name a:hover{
+            color: #1650E1;
+        }
+    </style>
+
+    <body>
+        <div class="tab2-content-container">
+            <br><br>
+            <table id="archived_classes_table" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            <span>No.</span>
+                        </th>
+                        <th onclick="sortTableTab2(1)">
+                            <div class="header-wrapper">
+                                <span>
+                                    Class Name
+                                    <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                </span>
+                            </div>
+                        </th>
+                        <th onclick="sortTableTab2(2)">
+                            <div class="header-wrapper">
+                                <span>
+                                    Subject Taught
+                                    <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                </span>
+                            </div>
+                        </th>
+                        <th onclick="sortTableTab2(3)">
+                            <div class="header-wrapper">
+                                <span>
+                                    Study Level
+                                    <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                </span>
+                            </div>
+                        </th>
+                        <th>
+                            <span>Class Time</span>
+                        </th>
+                        <th onclick="sortTableTab2(4)">
+                            <div class="header-wrapper">
+                                <span>
+                                    Archived At
+                                    <i class="fas fa-sort" style="margin-left: 10px;"></i>
+                                </span>
+                            </div>
+                        </th>
+                        <th>
+                            <span>Action</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for classes in archived_tuition_classes %}
+                    <tr>
+                        <td>{{ archived_tuition_classes.start_index|add:forloop.counter0 }}</td>
+                        <td class="tuition_class_name"><a href="{% url 'admin_view_class_detail' classes.id%}">{{ classes.tuition_class_name}}</a></td>
+                        <td>{{ classes.subject }}</td>
+                        <td>{{ classes.tuition_class_study_level}}</td>
+                        <td>Every {{ classes.weekly_day}}
+                            <h6><span style="font-size: smaller;">{{ classes.general_start_time }} to {{ classes.general_end_time }}</span></h6>
+                        </td>
+                        <td>{{ classes.archived_at|date:"Y-m-d H:i:s" }}</td>
+                        <td class="action-buttons">
+                            <a href="{% url 'admin_edit_class_detail' pk=classes.id %}" class="btn btn-primary edit-button"><i class="fas fa-edit"></i></a>
+                            <span style="margin-right: 10px;"></span>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteArchivedModal{{ classes.id }}"><i class="fas fa-trash"></i></button>
+                            <span style="margin-right: 10px;"></span>
+                            <button type="button" class="btn btn-info unarchive-button" data-bs-toggle="modal" data-bs-target="#unarchiveModal{{ classes.id }}"><i class="fas fa-undo"></i></button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Second Pagination Block -->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+                {% if archived_tuition_classes.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?second_page=1&active_tab=tab2">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?second_page={{ archived_tuition_classes.previous_page_number }}&active_tab=tab2">Previous</a>
+                </li>
+                {% endif %}
+
+                {% for i in page_range_second %}
+                    {% if i == archived_tuition_classes.number %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ i }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?second_page={{ i }}&active_tab=tab2">{{ i }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if archived_tuition_classes.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?second_page={{ archived_tuition_classes.next_page_number }}&active_tab=tab2">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?second_page={{ archived_tuition_classes.paginator.num_pages }}&active_tab=tab2">Last</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        
+
+        <!--Delete Class Modal-->
+        {% for classes in archived_tuition_classes %}
+        <div class="modal fade" id="deleteArchivedModal{{ classes.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><b>Delete Class</b></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure want to delete the class with the name "{{ classes.tuition_class_name }}"?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <a href="{% url 'admin_delete_tuition_class' classes.id %}" class="btn btn-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!--Unarchive Class Modal-->
+        {% for classes in archived_tuition_classes %}
+        <div class="modal fade" id="unarchiveModal{{ classes.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"><b>Unarchive Class</b></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure want to unarchive the class with the name of "{{ classes.tuition_class_name }}"?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <a href="{% url 'admin_unarchive_class' classes.id %}" class="btn btn-primary">Unarchive</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        
+    </body>
+
+    <script>
+        function sortTableTab2(n) {
+          var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+          table = document.getElementById("archived_classes_table");
+          switching = true;
+          dir = "asc";
+          
+          while (switching) {
+            switching = false;
+            rows = table.rows;
+            
+            for (i = 1; i < (rows.length - 1); i++) {
+              shouldSwitch = false;
+              x = rows[i].getElementsByTagName("td")[n].textContent.toLowerCase();
+              y = rows[i + 1].getElementsByTagName("td")[n].textContent.toLowerCase();
+              
+              if (dir == "asc") {
+                if (x > y) {
+                  shouldSwitch = true;
+                  break;
+                }
+              } else if (dir == "desc") {
+                if (x < y) {
+                  shouldSwitch = true;
+                  break;
+                }
+              }
+            }
+            
+            if (shouldSwitch) {
+              rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+              switching = true;
+              switchcount++;
+            } else {
+              if (switchcount === 0 && dir === "asc") {
+                dir = "desc";
+                switching = true;
+              }
+            }
+          }
+        }
+      </script>
+</html>
